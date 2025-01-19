@@ -16,7 +16,7 @@ const transcribeFile = async () => {
   );
 
   if (error) throw error;
-  if (!error) console.dir(result, { depth: null });
+  if (!error) console.dir(result.results.channels[0].alternatives[0].transcript, { depth: null });
 };
 
 transcribeFile();
