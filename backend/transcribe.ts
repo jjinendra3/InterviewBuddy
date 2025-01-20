@@ -1,14 +1,13 @@
-// index.js (node example)
-const dotenv = require('dotenv');
+const dotenv = require("dotenv");
+const fs = require("fs");
 dotenv.config();
 const { createClient } = require("@deepgram/sdk");
-const fs = require("fs");
 
-const transcribeFile = async () => {
+export const transcribeFile = async () => {
   const deepgram = createClient(process.env.DEEPGRAM_API_KEY);
 
   const { result, error } = await deepgram.listen.prerecorded.transcribeFile(
-    fs.readFileSync("lol.mp3"),
+    fs.readFileSync("upload/recording.webm"),
     {
       model: "nova-2",
       smart_format: true,
@@ -16,7 +15,5 @@ const transcribeFile = async () => {
   );
 
   if (error) throw error;
-  if (!error) console.dir(result.results.channels[0].alternatives[0].transcript, { depth: null });
+  if (!error) return result.results.channels[0].alternatives[0].transcript;
 };
-
-transcribeFile();

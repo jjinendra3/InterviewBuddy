@@ -1,6 +1,14 @@
 {
+  "scripts": {
+    "start-frontend": "cd frontend && npm run dev",
+    "start-backend": "cd backend && npm start",
+    "start": "concurrently -n \"FRONTEND,BACKEND\" -c \"bgBlue,bgYellow\" -p \"[{name}]\" \"npm run start-frontend\" \"npm run start-backend\"",
+    "install-frontend": "cd Frontend && npm i && npm run build",
+    "install-backend": "cd Backend && npm i",
+    "installer": "npm i && npm run install-backend && npm run install-frontend",
+    "format": "prettier --write ."
+  },
   "dependencies": {
-    "@deepgram/sdk": "^3.9.0",
-    "dotenv": "^16.4.7"
+    "concurrently": "^9.1.2"
   }
 }
