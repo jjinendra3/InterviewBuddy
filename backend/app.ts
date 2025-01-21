@@ -1,8 +1,9 @@
+import { useAi } from "./ai";
 import { transcribeFile } from "./transcribe";
-
+import { getAudio } from "./speech";
 const express = require("express");
-const multer = require("multer");
 const path = require("path");
+const multer = require("multer");
 const cors = require("cors");
 const fs = require("fs");
 const app = express();
@@ -17,22 +18,31 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
 
-const storage = multer.diskStorage ({
-  destination : './uploads',
+const storage = multer.diskStorage({
+  destination: "./uploads",
   filename: function (req, file, cb) {
-    cb (null, file.originalname)
-  }
-})
+    cb(null, file.originalname);
+  },
+});
 
-const upload = multer({ storage }).fields([{ name: "file" }, { name: "audio" }]);
+const upload = multer({ storage }).fields([
+  { name: "file" },
+  { name: "audio" },
+]);
 
-app.post("/transcribe", upload, async(req, res) => {
-  try {    
-    const response=await transcribeFile();
-    return res.json(response);
+app.post("/transcribe", upload, async (req, res) => {
+  try {
+    const response = await transcribeFile();
+    console.log(response);
+    const textGen = await useAi(response);
+    console.log("Text generated:", textGen);
+    await getAudio(textGen);
+    const outputAudio = path.join(__dirname, "output.wav");
+    if (!fs.existsSync(outputAudio)) throw "Not Found!";
+    return res.sendFile(outputAudio);
   } catch (error) {
-    console.error("Error handling /transcribe:", error);
-    return res.status(500).send({ message: "Internal server error" });
+    return res.sendFile(path.join(__dirname, "audio_files/error.wav"));
+    //TODO: SEND A SUCCESS BOOL AS WELL TO TAKE STEPS IN FRONTEND!
   }
 });
 

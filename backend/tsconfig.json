@@ -1,8 +1,5 @@
 {
-    "compilerOptions": {
-      "types": [
-        // ... other types
-        "node"
-      ],
-    },
+  "compilerOptions": {
+    "types": ["node"]
   }
+}
