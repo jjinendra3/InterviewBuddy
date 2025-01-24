@@ -6,7 +6,8 @@
     "install-frontend": "cd Frontend && npm i && npm run build",
     "install-backend": "cd Backend && npm i",
     "installer": "npm i && npm run install-backend && npm run install-frontend",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "start-git": "npm run format && git add ."
   },
   "dependencies": {
     "concurrently": "^9.1.2",

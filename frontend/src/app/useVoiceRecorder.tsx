@@ -1,6 +1,10 @@
 import { useState, useRef, useCallback } from "react";
 
-export function useVoiceRecorder(maxDuration = 20000, silenceThreshold = 10, silenceTimeout = 3000) {
+export function useVoiceRecorder(
+  maxDuration = 20000,
+  silenceThreshold = 10,
+  silenceTimeout = 3000,
+) {
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -15,7 +19,6 @@ export function useVoiceRecorder(maxDuration = 20000, silenceThreshold = 10, sil
     navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then((stream) => {
-
         const mediaRecorder = new MediaRecorder(stream);
         mediaRecorderRef.current = mediaRecorder;
         mediaRecorder.ondataavailable = (event) => {
@@ -56,7 +59,7 @@ export function useVoiceRecorder(maxDuration = 20000, silenceThreshold = 10, sil
               silenceDetectedRef.current = true;
               silenceTimerRef.current = setTimeout(() => {
                 if (mediaRecorder.state === "recording") {
-                  console.log('Silence detected, stopping recording');
+                  console.log("Silence detected, stopping recording");
                   mediaRecorder.stop();
                   setIsRecording(false);
                 }

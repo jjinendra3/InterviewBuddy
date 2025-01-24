@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useVoiceRecorder } from "./useVoiceRecorder";
 import { Mic, Square } from "lucide-react";
 import axios from "axios";
-import Loader from "./loader";
+import Loader from "../components/loader";
 
 export default function VoiceTranscriptionPage() {
   const [isLoading, setIsLoading] = useState(false);
