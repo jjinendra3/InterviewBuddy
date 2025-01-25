@@ -9,10 +9,9 @@ node_modules
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
-
+interviewPrompts
 # testing
 /coverage
-
 # next.js
 .next/
 /out/
@@ -39,3 +38,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+output.wav

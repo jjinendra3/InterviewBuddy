@@ -1,0 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Interview {
+  id            String         @id @default(uuid())
+  candidateId   String
+  round         String
+  createdAt     DateTime       @default(now())
+  conversations Conversation[]
+}
+// TODO: Add a model for User Account.
+model Conversation {
+  id          String    @id @default(uuid())
+  interviewId String
+  interview   Interview @relation(fields: [interviewId], references: [id])
+  role        String
+  text        String
+  createdAt   DateTime  @default(now())
+}

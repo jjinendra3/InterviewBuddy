@@ -75,7 +75,7 @@ export function useVoiceRecorder(
           requestAnimationFrame(detectSilence);
         };
 
-        detectSilence();
+        detectSilence(); //TODO: THIS DOES NOT WORK AS EXPECTED, FIX IT
 
         timerRef.current = setTimeout(() => {
           if (mediaRecorder.state === "recording") {

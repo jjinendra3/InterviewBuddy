@@ -1,10 +1,28 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const dotenv = require("dotenv");
+const fs = require("fs");
 dotenv.config();
-
-export const useAi = async (text: string) => {
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-  const result = await model.generateContent(text);
-  return result.response.text();
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const systemInstruction = fs.readFileSync(
+  "interviewPrompts/GoogleHr.txt", //TODO: Configure for different company and rounds
+  "utf8",
+);
+const model = genAI.getGenerativeModel({
+  model: "gemini-1.5-flash",
+  systemInstruction: systemInstruction,
+});
+export const useAi = async (text: string, history: any) => {
+  //TODO: Add type for history
+  try {
+    const chat = model.startChat({
+      history: history,
+      generationConfig: {
+        maxOutputTokens: 100,
+      },
+    });
+    const result = await chat.sendMessage(text);
+    return result.response.text();
+  } catch (error) {
+    console.log(error);
+  }
 };
