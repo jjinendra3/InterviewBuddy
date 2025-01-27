@@ -5,7 +5,12 @@ const Loader = () => {
   return (
     <StyledWrapper>
       <div className="spinner">
-        <div className="spinner1" />
+        <div />
+        <div />
+        <div />
+        <div />
+        <div />
+        <div />
       </div>
     </StyledWrapper>
   );
@@ -13,29 +18,59 @@ const Loader = () => {
 
 const StyledWrapper = styled.div`
   .spinner {
-    background-image: linear-gradient(rgb(186, 66, 255) 35%, rgb(0, 225, 255));
-    width: 100px;
-    height: 100px;
-    animation: spinning82341 1.7s linear infinite;
-    text-align: center;
-    border-radius: 50px;
-    filter: blur(1px);
-    box-shadow:
-      0px -5px 20px 0px rgb(186, 66, 255),
-      0px 5px 20px 0px rgb(0, 225, 255);
+    width: 44px;
+    height: 44px;
+    animation: spinner-y0fdc1 2s infinite ease;
+    transform-style: preserve-3d;
   }
 
-  .spinner1 {
-    background-color: rgb(36, 36, 36);
-    width: 100px;
-    height: 100px;
-    border-radius: 50px;
-    filter: blur(10px);
+  .spinner > div {
+    background-color: rgba(0, 77, 255, 0.2);
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    border: 2px solid #004dff;
   }
 
-  @keyframes spinning82341 {
-    to {
-      transform: rotate(360deg);
+  .spinner div:nth-of-type(1) {
+    transform: translateZ(-22px) rotateY(180deg);
+  }
+
+  .spinner div:nth-of-type(2) {
+    transform: rotateY(-270deg) translateX(50%);
+    transform-origin: top right;
+  }
+
+  .spinner div:nth-of-type(3) {
+    transform: rotateY(270deg) translateX(-50%);
+    transform-origin: center left;
+  }
+
+  .spinner div:nth-of-type(4) {
+    transform: rotateX(90deg) translateY(-50%);
+    transform-origin: top center;
+  }
+
+  .spinner div:nth-of-type(5) {
+    transform: rotateX(-90deg) translateY(50%);
+    transform-origin: bottom center;
+  }
+
+  .spinner div:nth-of-type(6) {
+    transform: translateZ(22px);
+  }
+
+  @keyframes spinner-y0fdc1 {
+    0% {
+      transform: rotate(45deg) rotateX(-25deg) rotateY(25deg);
+    }
+
+    50% {
+      transform: rotate(45deg) rotateX(-385deg) rotateY(25deg);
+    }
+
+    100% {
+      transform: rotate(45deg) rotateX(-385deg) rotateY(385deg);
     }
   }
 `;

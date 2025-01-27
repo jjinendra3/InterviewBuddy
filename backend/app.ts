@@ -39,15 +39,15 @@ app.get("/user", async (req, res) => {
         candidateId: "brsuh",
       },
     });
-    const text = await useAi("Hello", []);
-    await prisma.conversation.create({
+    const text = await useAi("Hello" + "TimeLeft:10:00", []);
+    prisma.conversation.create({
       data: {
         role: "user",
         text: "Hello",
         interviewId: response.id,
       },
     });
-    await prisma.conversation.create({
+    prisma.conversation.create({
       data: {
         role: "model",
         text: text,
@@ -103,7 +103,9 @@ const getChatHistory = async (interviewId: string) => {
 };
 
 app.post("/transcribe", upload, async (req, res) => {
+  //TODO: Create a TEST THE ROUTE!
   try {
+    const outputAudioa = path.join(__dirname, "/uploads/recording.webm");
     const response = await transcribeFile();
     console.log(response);
     const history = await getChatHistory(
@@ -114,14 +116,14 @@ app.post("/transcribe", upload, async (req, res) => {
     await getAudio(textGen);
     const outputAudio = path.join(__dirname, "output.wav");
     if (!fs.existsSync(outputAudio)) throw "Not Found!";
-    await prisma.conversation.create({
+    prisma.conversation.create({
       data: {
         role: "user",
         text: response,
         interviewId: "cd5c2740-4a6d-416e-b1de-9c63344da87f",
       },
     });
-    await prisma.conversation.create({
+    prisma.conversation.create({
       data: {
         role: "model",
         text: textGen,
