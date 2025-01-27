@@ -1,17 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LeftPanel from "@/app/meet/_components/LeftPanel";
 import RightPanel from "@/app/meet/_components/RightPanel";
 import {
   ResizableHandle,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-
+import { playAudio } from "./_components/silenceDetection";
+import { useStore } from "@/lib/store";
 export default function Home() {
+  const startInterview = useStore((state) => state.startInterview);
   const [code, setCode] = useState("// Your code here");
-  const [isLoading, setIsLoading] = useState(true);
-  const [isRecording, setIsRecording] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  useEffect(() => {
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        alert("You are switching tabs. Your recording will be stopped.");
+      }
+    });
+    return () => {
+      window.removeEventListener("visibilitychange", () => {});
+    };
+  }, []);
+
+  useEffect(() => {
+    async function interviewIntro() {
+      const introduction = await startInterview(setIsLoading);
+      await playAudio(introduction, setIsLoading, setIsRecording);
+    }
+    interviewIntro();
+  }, []);
+
   //eslint-disable-next-line
   const [interViewStyle, setInterViewStyle] = useState<"HR" | "DSA">("HR");
   return (

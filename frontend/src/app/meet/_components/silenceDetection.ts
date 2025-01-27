@@ -112,14 +112,13 @@ function record(setIsLoading: any, setIsRecording: any) {
   });
 }
 
-async function playAudio(
+export async function playAudio(
   audioBlob: Blob,
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setIsRecording: React.Dispatch<React.SetStateAction<boolean>>,
 ) {
   try {
     const audioUrl = URL.createObjectURL(audioBlob);
-
     const audio = new Audio(audioUrl);
     setIsLoading(false);
     audio.play();

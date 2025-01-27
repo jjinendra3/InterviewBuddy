@@ -2,11 +2,9 @@ const dotenv = require("dotenv");
 const fs = require("fs");
 dotenv.config();
 const { createClient } = require("@deepgram/sdk");
-import prisma from "./prisma";
 export const transcribeFile = async () => {
   try {
     const deepgram = createClient(process.env.DEEPGRAM_API_KEY);
-
     const { result, error } = await deepgram.listen.prerecorded.transcribeFile(
       fs.readFileSync("uploads/recording.webm"),
       {
@@ -14,7 +12,6 @@ export const transcribeFile = async () => {
         smart_format: true,
       },
     );
-
     if (error) throw error;
     if (!error) {
       return result.results.channels[0].alternatives[0].transcript;
