@@ -7,13 +7,18 @@ import {
   ResizableHandle,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { playAudio } from "./_components/silenceDetection";
+import { playAudio } from "./_components/audioManager";
 import { useStore } from "@/lib/store";
 export default function Home() {
   const startInterview = useStore((state) => state.startInterview);
+  const interviewId = useStore((state) => state.interviewId);
+
   const [code, setCode] = useState("// Your code here");
   const [isLoading, setIsLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [aiSpeaking, setAiSpeaking] = useState(false);
+  const [minutes, setMinutes] = useState(10);
+  const [seconds, setSeconds] = useState(0);
   useEffect(() => {
     document.addEventListener("visibilitychange", () => {
       if (document.hidden) {
@@ -24,11 +29,19 @@ export default function Home() {
       window.removeEventListener("visibilitychange", () => {});
     };
   }, []);
-
+  const [once, setonce] = useState(true);
   useEffect(() => {
     async function interviewIntro() {
+      if (!once) return;
+      setonce(false);
       const introduction = await startInterview(setIsLoading);
-      await playAudio(introduction, setIsLoading, setIsRecording);
+      await playAudio(
+        introduction,
+        setIsLoading,
+        setIsRecording,
+        setAiSpeaking,
+        interviewId,
+      );
     }
     interviewIntro();
   }, []);
@@ -47,8 +60,15 @@ export default function Home() {
         <RightPanel
           isLoading={isLoading}
           isRecording={isRecording}
+          aiSpeaking={aiSpeaking}
           setIsRecording={setIsRecording}
           setIsLoading={setIsLoading}
+          setAiSpeaking={setAiSpeaking}
+          minutes={minutes}
+          seconds={seconds}
+          setMinutes={setMinutes}
+          setSeconds={setSeconds}
+          interviewId={interviewId}
         />
       </ResizablePanelGroup>
     </div>

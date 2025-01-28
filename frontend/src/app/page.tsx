@@ -140,7 +140,7 @@ export default function Home() {
       <footer className="py-6 px-4 sm:px-6 lg:px-8 bg-background">
         <div className="container mx-auto flex flex-col sm:flex-row justify-between items-center text-sm text-muted-foreground">
           <div className="mb-4 sm:mb-0">
-            &copy; 2023 InterviewBuddy. All rights reserved.
+            &copy; 2025 InterviewBuddy. All rights reserved.
           </div>
           <nav className="space-x-4">
             <Link href="/privacy" className="hover:text-primary">

@@ -4,23 +4,33 @@ import CountdownTimer from "../../../components/CountdownTimer";
 import CamScreen from "./CamScreen";
 import { Button } from "../../../components/ui/button";
 import Loader from "../../../components/loader";
-import { LottiePlayer } from "@/lottie/dotlottie";
-import {
-  startRecording,
-  stopRecording,
-  endRecording,
-} from "./silenceDetection";
+import { AiLottiePlayer, UserLottiePlayer } from "@/lottie/dotlottie";
+import { startRecording, stopRecording, endRecording } from "./audioManager";
 import { Square, Mic } from "lucide-react";
 export default function RightPanel({
   isLoading,
   isRecording,
   setIsLoading,
   setIsRecording,
+  aiSpeaking,
+  setAiSpeaking,
+  minutes,
+  setMinutes,
+  seconds,
+  setSeconds,
+  interviewId,
 }: {
   isLoading: boolean;
   isRecording: boolean;
+  aiSpeaking: boolean;
+  minutes: number;
+  seconds: number;
+  interviewId: string;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setIsRecording: React.Dispatch<React.SetStateAction<boolean>>;
+  setAiSpeaking: React.Dispatch<React.SetStateAction<boolean>>;
+  setMinutes: React.Dispatch<React.SetStateAction<number>>;
+  setSeconds: React.Dispatch<React.SetStateAction<number>>;
 }) {
   return (
     <ResizablePanel
@@ -30,7 +40,12 @@ export default function RightPanel({
       <Button className="bg-red-500 flex justify-center items-center font-mono font-bold text-white text-xl">
         End Meeting
       </Button>
-      <CountdownTimer initialMinutes={10} initialSeconds={0} />
+      <CountdownTimer
+        minutes={minutes}
+        seconds={seconds}
+        setMinutes={setMinutes}
+        setSeconds={setSeconds}
+      />
       <div className="flex rounded-lg shadow-sm p-4 mb-4 bg-red-500">
         <CamScreen />
       </div>
@@ -44,7 +59,12 @@ export default function RightPanel({
       )}
       {isRecording && (
         <div className="flex justify-center items-center w-full">
-          <LottiePlayer />
+          <UserLottiePlayer />
+        </div>
+      )}
+      {aiSpeaking && (
+        <div className="flex justify-center items-center w-full">
+          <AiLottiePlayer />
         </div>
       )}
       <div className="flex justify-center space-x-4">
@@ -52,7 +72,13 @@ export default function RightPanel({
           onClick={
             isRecording
               ? () => stopRecording(setIsRecording)
-              : () => startRecording(setIsLoading, setIsRecording)
+              : () =>
+                  startRecording(
+                    setIsLoading,
+                    setIsRecording,
+                    setAiSpeaking,
+                    interviewId,
+                  )
           }
           variant={isRecording ? "destructive" : "default"}
           className="w-32"

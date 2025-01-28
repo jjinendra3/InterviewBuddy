@@ -1,19 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 interface CountdownTimerProps {
-  initialMinutes: number;
-  initialSeconds: number;
+  minutes: number;
+  setMinutes: React.Dispatch<React.SetStateAction<number>>;
+  seconds: number;
+  setSeconds: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function CountdownTimer({
-  initialMinutes,
-  initialSeconds,
+  minutes,
+  setMinutes,
+  seconds,
+  setSeconds,
 }: CountdownTimerProps) {
-  const [minutes, setMinutes] = useState(initialMinutes);
-  const [seconds, setSeconds] = useState(initialSeconds);
-
   useEffect(() => {
     const interval = setInterval(() => {
       if (seconds > 0) {

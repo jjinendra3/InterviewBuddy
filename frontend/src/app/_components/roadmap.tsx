@@ -6,7 +6,7 @@ import { Building2, UserCircle, MessageCircle, Rocket } from "lucide-react";
 const steps = [
   { icon: Building2, title: "Select Company" },
   { icon: UserCircle, title: "Choose Role" },
-  { icon: MessageCircle, title: "Choose Interview Style Interview" },
+  { icon: MessageCircle, title: "Choose Interview Style" },
   { icon: Rocket, title: "Take the Interview!" },
 ];
 

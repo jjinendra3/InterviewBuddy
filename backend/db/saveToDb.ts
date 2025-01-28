@@ -9,31 +9,28 @@ export const createInterview = async (round: string, candidateId: string) => {
   });
 };
 
-export const saveToDbUser = (text: string, interviewId: string) => {
-  prisma.conversation.create({
+export const saveToDbUser = async (text: string, interviewId: string) => {
+  return await prisma.conversation.create({
     data: {
       role: "user",
       text: text,
       interviewId: interviewId,
     },
   });
-  return;
 };
 
-export const saveToDbModel = (text: string, interviewId: string) => {
-  prisma.conversation.create({
+export const saveToDbModel = async (text: string, interviewId: string) => {
+  return await prisma.conversation.create({
     data: {
       role: "model",
       text: text,
       interviewId: interviewId,
     },
   });
-  return;
 };
 
 export const getChatHistory = async (interviewId: string) => {
   try {
-    console.log(interviewId);
     const response = await prisma.conversation.findMany({
       where: {
         interviewId: interviewId,

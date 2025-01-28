@@ -1,10 +1,10 @@
 import { create } from "zustand";
 import axios from "axios";
-
+const BACKEND = "http://localhost:5000";
 interface Store {
-  interviewId: string | null;
+  interviewId: string;
   candidateId: string | null;
-  round: string;
+  round: string | null;
   setInterviewId: (id: string) => void;
   setCandidateId: (id: string) => void;
   startInterview: (
@@ -13,28 +13,32 @@ interface Store {
 }
 
 export const useStore = create<Store>()((set) => ({
-  interviewId: null,
+  interviewId: "",
   candidateId: null,
   setInterviewId: (id) => set({ interviewId: id }),
   setCandidateId: (id) => set({ candidateId: id }),
-  round: "null",
+  round: null,
   startInterview: async (
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   ) => {
     setIsLoading(true);
-    const response = await axios.post("http://localhost:5000/interview", {
+    const response = await axios.post(`${BACKEND}/interview`, {
       round: "google-hr",
-      candidate: "1234",
+      candidate: "15234",
     });
+    console.log(response.data);
     set({ interviewId: response.data.id });
     set({ candidateId: response.data.candidateId });
     set({ round: response.data.round });
-    const firstAudio = await axios.post("http://localhost:5000/transcribe", {
-      interviewId: response.data.id,
-      timeLeft: "TimeLeft: 10:00",
-      text: "Hello",
+    const formData = new FormData();
+    formData.append("interviewId", response.data.id);
+    formData.append("timeLeft", "TimeLeft: 10:00");
+    formData.append("text", "Hello, My name is Alex");
+    const firstAudio = await axios.post(`${BACKEND}/transcribe`, formData, {
+      responseType: "arraybuffer",
     });
+    const audioBlob = new Blob([firstAudio.data], { type: "audio/wav" });
     setIsLoading(false);
-    return firstAudio.data;
+    return audioBlob;
   },
 }));

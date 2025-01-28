@@ -43,13 +43,6 @@ app.post("/interview", async (req, res) => {
     const round = "google-hr"; //req.body.round;
     const response = await createInterview(round, candidateId);
     return res.status(200).json(response);
-    // const text = await useAi("Hello" + "TimeLeft:10:00", []);
-    // saveToDbUser("Hello", response.id);
-    // saveToDbModel(text, response.id);
-    // await getAudio(text);
-    // const outputAudio = path.join(__dirname, "output.wav");
-    // if (!fs.existsSync(outputAudio)) throw "Not Found!";
-    // return res.status(200).sendFile(outputAudio);
   } catch (error) {
     console.log(error);
     return res.status(500).send("Internal Server Error");
@@ -58,9 +51,11 @@ app.post("/interview", async (req, res) => {
 
 app.post("/transcribe", upload, async (req, res) => {
   try {
+    console.log(req.body);
     const interviewId = req.body.interviewId;
-    const timeLeft = req.body.timeLeft;
+    const timeLeft = req.body.timeLeft ?? "";
     const text = req.body.text;
+    console.log("text", text);
     const response = text == null ? await transcribeFile() : text;
     console.log(response);
     const history = await getChatHistory(interviewId);
