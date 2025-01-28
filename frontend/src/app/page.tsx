@@ -4,21 +4,21 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import Features from "./_components/features";
 import CompanyCarousel from "./_components/carousel";
 import InterviewRoadmap from "./_components/roadmap";
-import FunFacts from "./_components/fun-facts";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const route = useRouter();
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      <header className="py-6 px-4 sm:px-6 lg:px-8 bg-background">
+      <header className="py-6 px-4 sm:px-6 lg:px-8 bg-[#FFA09B] ">
         <div className="container mx-auto flex justify-between items-center">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-2xl font-bold text-gradient"
+            className="text-2xl font-bold text-white"
           >
             InterviewBuddy
           </motion.div>
@@ -28,7 +28,9 @@ export default function Home() {
               className="text-foreground hover:text-primary"
               asChild
             >
-              <Link href="/login">Login</Link>
+              <Link href="/login" className="text-white text-lg">
+                Login
+              </Link>
             </Button>
           </nav>
         </div>
@@ -56,13 +58,16 @@ export default function Home() {
                   <Button
                     size="lg"
                     className="w-full sm:w-auto bg-white text-primary hover:bg-secondary"
+                    onClick={() => {
+                      route.push("/company");
+                    }}
                   >
                     Start Interview
                   </Button>
                   <Button
                     variant="outline"
                     size="lg"
-                    className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-primary"
+                    className="w-full sm:w-auto bg-white text-primary hover:bg-secondary"
                   >
                     Sign Up
                   </Button>
@@ -75,10 +80,10 @@ export default function Home() {
                 className="relative h-64 sm:h-80 lg:h-96"
               >
                 <Image
-                  src="/placeholder.svg"
+                  src="/hero/designer.jpeg"
                   alt="AI Interview Illustration"
                   fill
-                  className="object-contain rounded-lg shadow-lg"
+                  className="object-cover rounded-lg shadow-lg"
                 />
               </motion.div>
             </div>
@@ -89,9 +94,9 @@ export default function Home() {
 
         <InterviewRoadmap />
 
-        <Features />
+        {/* <Features /> */}
 
-        <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-secondary">
+        {/* <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-background">
           <div className="container mx-auto max-w-5xl">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
               <motion.div
@@ -129,7 +134,7 @@ export default function Home() {
               </motion.div>
             </div>
           </div>
-        </section>
+        </section> */}
       </main>
 
       <footer className="py-6 px-4 sm:px-6 lg:px-8 bg-background">

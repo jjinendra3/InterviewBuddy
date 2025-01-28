@@ -1,13 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Building2, UserCircle, Code, MessageCircle } from "lucide-react";
+import { Building2, UserCircle, MessageCircle, Rocket } from "lucide-react";
 
 const steps = [
   { icon: Building2, title: "Select Company" },
   { icon: UserCircle, title: "Choose Role" },
-  { icon: Code, title: "DSA Interview" },
-  { icon: MessageCircle, title: "HR Interview" },
+  { icon: MessageCircle, title: "Choose Interview Style Interview" },
+  { icon: Rocket, title: "Take the Interview!" },
 ];
 
 export default function InterviewRoadmap() {
@@ -21,7 +21,7 @@ export default function InterviewRoadmap() {
           {steps.map((step, index) => (
             <motion.div
               key={index}
-              className="flex items-center mb-8 last:mb-0"
+              className="flex items-center mb-8 last:mb-0 relative"
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: index * 0.2 }}
