@@ -28,6 +28,7 @@ export default function CountdownTimer({
     }, 1000);
 
     return () => clearInterval(interval);
+    //eslint-disable-next-line
   }, [minutes, seconds]);
 
   return (

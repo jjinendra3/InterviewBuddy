@@ -1,3 +1,4 @@
+import { playPing } from "@/components/pingSound";
 import axios from "axios";
 import React from "react";
 const VOICE_MIN_DECIBELS = -60;
@@ -10,12 +11,10 @@ export function startRecording(
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setIsRecording: React.Dispatch<React.SetStateAction<boolean>>,
   setAiSpeaking: React.Dispatch<React.SetStateAction<boolean>>,
-  interviewId: string,
 ) {
   IS_RECORDING = true;
-  console.log("start recording");
   setIsRecording(IS_RECORDING);
-  record(setIsLoading, setIsRecording, setAiSpeaking, interviewId);
+  record(setIsLoading, setIsRecording, setAiSpeaking);
 }
 
 export function stopRecording(
@@ -30,10 +29,8 @@ function record(
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setIsRecording: React.Dispatch<React.SetStateAction<boolean>>,
   setAiSpeaking: React.Dispatch<React.SetStateAction<boolean>>,
-  interviewId: string,
 ) {
   navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-    console.log("Media stream acquired");
     MEDIA_RECORDER = new MediaRecorder(stream);
     MEDIA_RECORDER.start();
 
@@ -61,7 +58,6 @@ function record(
       const currentTime = Date.now();
 
       if (currentTime - startTime > DIALOG_MAX_LENGTH) {
-        console.log("Recording timeout");
         MEDIA_RECORDER?.stop();
         return;
       }
@@ -70,7 +66,6 @@ function record(
         anySoundDetected &&
         currentTime - lastDetectedTime > DELAY_BETWEEN_DIALOGS
       ) {
-        console.log("Stoping");
         setIsRecording(false);
         MEDIA_RECORDER?.stop();
         return;
@@ -87,20 +82,13 @@ function record(
     };
     window.requestAnimationFrame(detectSound);
 
-    MEDIA_RECORDER.addEventListener("stop", () => {
+    MEDIA_RECORDER.addEventListener("stop", async () => {
       stream.getTracks().forEach((track) => track.stop());
       audioContext.close();
-
       if (!anySoundDetected) return;
-
+      await playPing();
       const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-      sendAudio(
-        audioBlob,
-        setIsLoading,
-        setIsRecording,
-        setAiSpeaking,
-        interviewId,
-      );
+      sendAudio(audioBlob, setIsLoading, setIsRecording, setAiSpeaking);
     });
   });
 }
@@ -110,19 +98,21 @@ export async function playAudio(
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setIsRecording: React.Dispatch<React.SetStateAction<boolean>>,
   setAiSpeaking: React.Dispatch<React.SetStateAction<boolean>>,
-  interviewId: string,
 ) {
   try {
+    await playPing();
     setAiSpeaking(true);
     const audioUrl = URL.createObjectURL(audioBlob);
     const audio = new Audio(audioUrl);
     setIsLoading(false);
     audio.play();
-    audio.onended = async () => {
-      URL.revokeObjectURL(audioUrl);
-      setAiSpeaking(false);
-      startRecording(setIsLoading, setIsRecording, setAiSpeaking, interviewId);
-    };
+    await new Promise((resolve) => {
+      audio.onended = resolve;
+    });
+    URL.revokeObjectURL(audioUrl);
+    await playPing();
+    setAiSpeaking(false);
+    startRecording(setIsLoading, setIsRecording, setAiSpeaking);
   } catch (error) {
     console.error("Error during playback:", error);
   }
@@ -133,13 +123,12 @@ async function sendAudio(
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setIsRecording: React.Dispatch<React.SetStateAction<boolean>>,
   setAiSpeaking: React.Dispatch<React.SetStateAction<boolean>>,
-  interviewId: string,
 ) {
-  if (!audioBlob) {
-    startRecording(setIsLoading, setIsRecording, setAiSpeaking, interviewId);
+  const interviewId = await localStorage.getItem("interviewId");
+  if (!audioBlob || !interviewId) {
+    startRecording(setIsLoading, setIsRecording, setAiSpeaking);
     return;
   }
-
   const formData = new FormData();
   formData.append("audio", audioBlob, "recording.webm");
   formData.append("interviewId", interviewId);
@@ -152,13 +141,7 @@ async function sendAudio(
       { responseType: "arraybuffer" },
     );
     const responseBlob = new Blob([response.data], { type: "audio/wav" });
-    await playAudio(
-      responseBlob,
-      setIsLoading,
-      setIsRecording,
-      setAiSpeaking,
-      interviewId,
-    );
+    await playAudio(responseBlob, setIsLoading, setIsRecording, setAiSpeaking);
   } catch (error) {
     setIsLoading(false);
     console.error("Error during transcription:", error);

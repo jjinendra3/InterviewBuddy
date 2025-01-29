@@ -18,7 +18,6 @@ import {
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 const uploadDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
@@ -51,26 +50,22 @@ app.post("/interview", async (req, res) => {
 
 app.post("/transcribe", upload, async (req, res) => {
   try {
-    console.log(req.body);
     const interviewId = req.body.interviewId;
     const timeLeft = req.body.timeLeft ?? "";
     const text = req.body.text;
-    console.log("text", text);
     const response = text == null ? await transcribeFile() : text;
-    console.log(response);
     const history = await getChatHistory(interviewId);
     const textGen = await useAi(response + timeLeft, history);
-    console.log("Text generated:", textGen);
     await getAudio(textGen);
     const outputAudio = path.join(__dirname, "output.wav");
     if (!fs.existsSync(outputAudio)) throw "Not Found!";
-    saveToDbUser(response, interviewId);
-    saveToDbModel(textGen, interviewId);
+    await saveToDbUser(response, interviewId);
+    await saveToDbModel(textGen, interviewId);
     return res.status(200).sendFile(outputAudio);
   } catch (error) {
     console.log(error);
     return res
-      .status(200)
+      .status(500)
       .sendFile(path.join(__dirname, "audio_files/error.wav"));
   }
 });

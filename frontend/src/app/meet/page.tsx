@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import LeftPanel from "@/app/meet/_components/LeftPanel";
 import RightPanel from "@/app/meet/_components/RightPanel";
 import {
@@ -9,6 +9,10 @@ import {
 } from "@/components/ui/resizable";
 import { playAudio } from "./_components/audioManager";
 import { useStore } from "@/lib/store";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(useGSAP);
 export default function Home() {
   const startInterview = useStore((state) => state.startInterview);
   const interviewId = useStore((state) => state.interviewId);
@@ -19,33 +23,34 @@ export default function Home() {
   const [aiSpeaking, setAiSpeaking] = useState(false);
   const [minutes, setMinutes] = useState(10);
   const [seconds, setSeconds] = useState(0);
-  useEffect(() => {
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) {
-        alert("You are switching tabs. Your recording will be stopped.");
-      }
-    });
-    return () => {
-      window.removeEventListener("visibilitychange", () => {});
-    };
-  }, []);
-  const [once, setonce] = useState(true);
-  useEffect(() => {
+  // useEffect(() => {
+  //   async function interviewIntro() {
+  //     if (!once) return;
+  //     setonce(false);
+  //     const introduction = await startInterview(setIsLoading);
+  //     await playAudio(
+  //       introduction,
+  //       setIsLoading,
+  //       setIsRecording,
+  //       setAiSpeaking,
+  //       interviewId,
+  //     );
+  //   }
+  //   interviewIntro();
+  //   //eslint-disable-next-line
+  // }, []);
+  useGSAP(() => {
     async function interviewIntro() {
-      if (!once) return;
-      setonce(false);
       const introduction = await startInterview(setIsLoading);
       await playAudio(
         introduction,
         setIsLoading,
         setIsRecording,
         setAiSpeaking,
-        interviewId,
       );
     }
     interviewIntro();
-  }, []);
-
+  });
   //eslint-disable-next-line
   const [interViewStyle, setInterViewStyle] = useState<"HR" | "DSA">("HR");
   return (

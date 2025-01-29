@@ -26,7 +26,7 @@ export const useStore = create<Store>()((set) => ({
       round: "google-hr",
       candidate: "15234",
     });
-    console.log(response.data);
+    localStorage.setItem("interviewId", response.data.id);
     set({ interviewId: response.data.id });
     set({ candidateId: response.data.candidateId });
     set({ round: response.data.round });
@@ -37,6 +37,7 @@ export const useStore = create<Store>()((set) => ({
     const firstAudio = await axios.post(`${BACKEND}/transcribe`, formData, {
       responseType: "arraybuffer",
     });
+
     const audioBlob = new Blob([firstAudio.data], { type: "audio/wav" });
     setIsLoading(false);
     return audioBlob;

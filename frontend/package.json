@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@gsap/react": "^2.1.2",
     "@lottiefiles/dotlottie-react": "^0.12.2",
     "@mediapipe/face_mesh": "^0.4.1633559619",
     "@monaco-editor/react": "^4.6.0",
