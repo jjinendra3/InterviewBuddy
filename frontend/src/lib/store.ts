@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
-const BACKEND = "http://localhost:5000";
+const BACKEND = process.env.NEXT_BACKEND_URL;
 interface Store {
   interviewId: string;
   candidateId: string | null;

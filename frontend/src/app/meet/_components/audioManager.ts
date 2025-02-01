@@ -136,7 +136,7 @@ async function sendAudio(
 
   try {
     const response = await axios.post(
-      "http://localhost:5000/transcribe",
+      `${process.env.NEXT_BACKEND_URL}/transcribe`,
       formData,
       { responseType: "arraybuffer" },
     );
