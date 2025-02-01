@@ -18,14 +18,12 @@ export default function RightPanel({
   setMinutes,
   seconds,
   setSeconds,
-  interviewId,
 }: {
   isLoading: boolean;
   isRecording: boolean;
   aiSpeaking: boolean;
   minutes: number;
   seconds: number;
-  interviewId: string;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setIsRecording: React.Dispatch<React.SetStateAction<boolean>>;
   setAiSpeaking: React.Dispatch<React.SetStateAction<boolean>>;
@@ -77,7 +75,6 @@ export default function RightPanel({
                     setIsLoading,
                     setIsRecording,
                     setAiSpeaking,
-                    interviewId,
                   )
           }
           variant={isRecording ? "destructive" : "default"}

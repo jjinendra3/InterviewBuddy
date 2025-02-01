@@ -4,7 +4,7 @@ const fs = require("fs");
 dotenv.config();
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const systemInstruction = fs.readFileSync(
-  "interviewPrompts/GoogleHr.txt", //TODO: Configure for different company and rounds
+  process.env.PROMPT_PATH, //TODO: Configure for different company and rounds
   "utf8",
 );
 const model = genAI.getGenerativeModel({

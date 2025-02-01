@@ -15,8 +15,6 @@ import { useGSAP } from "@gsap/react";
 gsap.registerPlugin(useGSAP);
 export default function Home() {
   const startInterview = useStore((state) => state.startInterview);
-  const interviewId = useStore((state) => state.interviewId);
-
   const [code, setCode] = useState("// Your code here");
   const [isLoading, setIsLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -73,7 +71,6 @@ export default function Home() {
           seconds={seconds}
           setMinutes={setMinutes}
           setSeconds={setSeconds}
-          interviewId={interviewId}
         />
       </ResizablePanelGroup>
     </div>
