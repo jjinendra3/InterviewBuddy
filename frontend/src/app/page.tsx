@@ -6,10 +6,8 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import CompanyCarousel from "./_components/carousel";
 import InterviewRoadmap from "./_components/roadmap";
-import { useRouter } from "next/navigation";
 
 export default function Home() {
-  const route = useRouter();
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <header className="py-6 px-4 sm:px-6 lg:px-8 bg-[#FFA09B] ">
@@ -55,15 +53,15 @@ export default function Home() {
                   }
                 </p>
                 <div className="space-y-4 sm:space-y-0 sm:space-x-4">
+                 <Link href={"/company"}>
                   <Button
                     size="lg"
                     className="w-full sm:w-auto bg-white text-primary hover:bg-secondary"
-                    onClick={() => {
-                      route.push("/company");
-                    }}
-                  >
+                    
+                    >
                     Start Interview
                   </Button>
+                    </Link>
                   <Button
                     variant="outline"
                     size="lg"
