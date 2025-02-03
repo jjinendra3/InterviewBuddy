@@ -53,15 +53,14 @@ export default function Home() {
                   }
                 </p>
                 <div className="space-y-4 sm:space-y-0 sm:space-x-4">
-                 <Link href={"/company"}>
-                  <Button
-                    size="lg"
-                    className="w-full sm:w-auto bg-white text-primary hover:bg-secondary"
-                    
+                  <Link href={"/company"}>
+                    <Button
+                      size="lg"
+                      className="w-full sm:w-auto bg-white text-primary hover:bg-secondary"
                     >
-                    Start Interview
-                  </Button>
-                    </Link>
+                      Start Interview
+                    </Button>
+                  </Link>
                   <Button
                     variant="outline"
                     size="lg"

@@ -70,6 +70,10 @@ app.post("/transcribe", upload, async (req, res) => {
   }
 });
 
+app.head("/wake-up", (req, res) => {
+  return res.status(200).send("OK");
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

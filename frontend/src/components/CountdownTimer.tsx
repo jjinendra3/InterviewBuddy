@@ -25,6 +25,8 @@ export default function CountdownTimer({
       } else {
         clearInterval(interval);
       }
+      localStorage.setItem("minutes", minutes.toString().padStart(2, "0"));
+      localStorage.setItem("seconds", seconds.toString().padStart(2, "0"));
     }, 1000);
 
     return () => clearInterval(interval);

@@ -125,6 +125,8 @@ async function sendAudio(
   setAiSpeaking: React.Dispatch<React.SetStateAction<boolean>>,
 ) {
   const interviewId = await localStorage.getItem("interviewId");
+  const seconds = await localStorage.getItem("seconds");
+  const minutes = await localStorage.getItem("minutes");
   if (!audioBlob || !interviewId) {
     startRecording(setIsLoading, setIsRecording, setAiSpeaking);
     return;
@@ -132,6 +134,7 @@ async function sendAudio(
   const formData = new FormData();
   formData.append("audio", audioBlob, "recording.webm");
   formData.append("interviewId", interviewId);
+  formData.append("timeLeft", `TimeLeft: ${minutes}:${seconds}`);
   setIsLoading(true);
 
   try {

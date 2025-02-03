@@ -71,11 +71,7 @@ export default function RightPanel({
             isRecording
               ? () => stopRecording(setIsRecording)
               : () =>
-                  startRecording(
-                    setIsLoading,
-                    setIsRecording,
-                    setAiSpeaking,
-                  )
+                  startRecording(setIsLoading, setIsRecording, setAiSpeaking)
           }
           variant={isRecording ? "destructive" : "default"}
           className="w-32"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LeftPanel from "@/app/meet/_components/LeftPanel";
 import RightPanel from "@/app/meet/_components/RightPanel";
 import {
@@ -21,6 +21,7 @@ export default function Home() {
   const [aiSpeaking, setAiSpeaking] = useState(false);
   const [minutes, setMinutes] = useState(10);
   const [seconds, setSeconds] = useState(0);
+  //TODO: Enable the tab swit
   // useEffect(() => {
   //   async function interviewIntro() {
   //     if (!once) return;
@@ -37,6 +38,15 @@ export default function Home() {
   //   interviewIntro();
   //   //eslint-disable-next-line
   // }, []);
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      alert(document.hidden ? "Tab is hidden" : "Tab is active");
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () =>
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, []);
   useGSAP(() => {
     async function interviewIntro() {
       const introduction = await startInterview(setIsLoading);
