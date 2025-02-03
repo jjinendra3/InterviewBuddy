@@ -21,28 +21,12 @@ export default function Home() {
   const [aiSpeaking, setAiSpeaking] = useState(false);
   const [minutes, setMinutes] = useState(10);
   const [seconds, setSeconds] = useState(0);
-  //TODO: Enable the tab swit
-  // useEffect(() => {
-  //   async function interviewIntro() {
-  //     if (!once) return;
-  //     setonce(false);
-  //     const introduction = await startInterview(setIsLoading);
-  //     await playAudio(
-  //       introduction,
-  //       setIsLoading,
-  //       setIsRecording,
-  //       setAiSpeaking,
-  //       interviewId,
-  //     );
-  //   }
-  //   interviewIntro();
-  //   //eslint-disable-next-line
-  // }, []);
   useEffect(() => {
     const handleVisibilityChange = () => {
-      alert(document.hidden ? "Tab is hidden" : "Tab is active");
+      if (document.hidden) {
+        console.log("User has left the tab");
+      }
     };
-
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () =>
       document.removeEventListener("visibilitychange", handleVisibilityChange);

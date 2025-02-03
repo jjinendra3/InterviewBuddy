@@ -1,10 +1,10 @@
-"use client";
 import React, { useRef, useState, useEffect } from "react";
+import * as faceapi from "face-api.js";
 
-const CamScreen = () => {
-  //eslint-disable-next-line
-  const videoRef = useRef<any>(null);
+const ProctorVideo = () => {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
+  const [zeroCount, setZeroCount] = useState(0);
 
   useEffect(() => {
     const enableVideoStream = async () => {
@@ -13,35 +13,70 @@ const CamScreen = () => {
           video: true,
         });
         setMediaStream(stream);
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
       } catch (error) {
         console.error("Error accessing webcam", error);
       }
     };
-
     enableVideoStream();
+    return () => {
+      if (mediaStream) {
+        mediaStream.getTracks().forEach((track) => track.stop());
+      }
+    };
   }, []);
 
   useEffect(() => {
-    if (videoRef.current && mediaStream) {
-      videoRef.current.srcObject = mediaStream;
-    }
-  }, [videoRef, mediaStream]);
+    const loadModels = async () => {
+      await Promise.all([
+        faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
+        faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
+      ]);
+    };
+    loadModels();
+  }, []);
 
   useEffect(() => {
-    return () => {
-      if (mediaStream) {
-        mediaStream.getTracks().forEach((track) => {
-          track.stop();
-        });
+    const detectFaces = async () => {
+      if (!videoRef.current) return;
+
+      const video = videoRef.current;
+      if (!video.videoWidth || !video.videoHeight) return;
+
+      const detections = await faceapi.detectAllFaces(
+        video,
+        new faceapi.TinyFaceDetectorOptions(),
+      );
+      const faceCount = detections.length;
+
+      if (faceCount === 0 || faceCount > 1) {
+        setZeroCount((prev) => prev + 1);
+      }
+      if (zeroCount !== 0) {
+        if (zeroCount > 3) {
+          endMeeting();
+        }
+        alert("Warning! Face count is unusual. Fix Immediately.");
       }
     };
+
+    const intervalId = setInterval(detectFaces, 2000);
+
+    return () => clearInterval(intervalId);
     //eslint-disable-next-line
   }, []);
 
-  return (
-    <div>
-      <video ref={videoRef} autoPlay={true} />
-    </div>
-  );
+  const endMeeting = () => {
+    console.log("Meeting Ended!");
+    if (mediaStream) {
+      mediaStream.getTracks().forEach((track) => track.stop());
+    }
+    alert("Meeting Ended!");
+  };
+
+  return <video ref={videoRef} autoPlay muted />;
 };
-export default CamScreen;
+
+export default ProctorVideo;
