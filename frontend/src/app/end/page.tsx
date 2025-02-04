@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useStore } from "@/lib/store";
+import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 const quotes = [
   "The only way to do great work is to love what you do. - Steve Jobs",
@@ -22,11 +23,16 @@ export default function LoadingPage() {
 
     return () => clearInterval(interval);
   }, []);
-  useGSAP(async () => {
-    const response = await endMeeting();
-    if (!response) {
-      alert("Error generating the evaluation report. Please try again later.");
-    }
+  useGSAP(() => {
+    const endTheMeeting = async () => {
+      const response = await endMeeting();
+      if (!response) {
+        alert(
+          "Error generating the evaluation report. Please try again later.",
+        );
+      }
+    };
+    endTheMeeting();
   });
 
   return (

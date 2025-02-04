@@ -26,6 +26,7 @@ const ProctorVideo = () => {
         mediaStream.getTracks().forEach((track) => track.stop());
       }
     };
+    //eslint-disable-next-line
   }, []);
 
   useEffect(() => {
