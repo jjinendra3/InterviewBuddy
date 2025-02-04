@@ -10,6 +10,7 @@ interface Store {
   startInterview: (
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   ) => Promise<Blob>;
+  endInterview: () => Promise<boolean>;
 }
 
 export const useStore = create<Store>()((set) => ({
@@ -41,5 +42,31 @@ export const useStore = create<Store>()((set) => ({
     const audioBlob = new Blob([firstAudio.data], { type: "audio/wav" });
     setIsLoading(false);
     return audioBlob;
+  },
+  endInterview: async () => {
+    try {
+      const interviewId = localStorage.getItem("interviewId");
+      if (!interviewId) return false;
+      localStorage.removeItem("interviewId");
+      const response = await axios.get(`${BACKEND}/end/{interviewId}`, {
+        responseType: "blob",
+      });
+      if (response.status === 500) {
+        return false;
+      }
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.setAttribute("download", "EvaluationReport.pdf");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
+      return true;
+    } catch (error) {
+      console.error("PDF download error:", error);
+      return false;
+    }
   },
 }));

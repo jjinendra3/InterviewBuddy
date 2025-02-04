@@ -16,9 +16,6 @@ export const useAi = async (text: string, history: chatHistory[]) => {
   try {
     const chat = model.startChat({
       history: history,
-      generationConfig: {
-        maxOutputTokens: 100,
-      },
     });
     const result = await chat.sendMessage(text);
     return result.response.text();

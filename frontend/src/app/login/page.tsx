@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,7 +15,9 @@ export default function Login() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
   };
-
+  useEffect(() => {
+    toaster("Welcome to the login page, this is still in development.");
+  }, []);
   const handleOtpRequest = () => {
     if (!email) {
       toaster("Please enter your email to request OTP");

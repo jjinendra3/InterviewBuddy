@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Mail, Lock, User, Github } from "lucide-react";
+import { toaster } from "@/components/toast";
 
 export default function Signup() {
   const [name, setName] = useState("");
@@ -19,6 +20,9 @@ export default function Signup() {
   const handleGoogleSignup = () => {};
 
   const handleGitHubSignup = () => {};
+  useEffect(() => {
+    toaster("Welcome to the signup page, this is still in development.");
+  }, []);
 
   return (
     <div className="h-screen w-full bg-gradient-custom flex flex-col items-center justify-center p-4">
