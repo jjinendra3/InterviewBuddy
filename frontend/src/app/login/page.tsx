@@ -1,40 +1,62 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Mail, Lock, Github } from "lucide-react";
 import { toaster } from "@/components/toast";
+import { useStore } from "@/lib/store";
+import { useRouter } from "next/navigation";
+import { SuccessLottiePlayer } from "@/components/lottie/dotlottie";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isOtpRequested, setIsOtpRequested] = useState(false);
-
-  const handleLogin = (e: React.FormEvent) => {
+  const [loggedIn, setLoggedIn] = useState(false);
+  const login = useStore((state) => state.login);
+  const route = useRouter();
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-  };
-  useEffect(() => {
-    toaster("Welcome to the login page, this is still in development.");
-  }, []);
-  const handleOtpRequest = () => {
-    if (!email) {
-      toaster("Please enter your email to request OTP");
+    const response = await login(email, password);
+    if (!response.success) {
+      toaster(response.message);
       return;
     }
-    console.log("OTP requested for:", email);
-    setIsOtpRequested(true);
+    setLoggedIn(true);
+    setTimeout(() => {
+      route.push("/company");
+    }, 5000);
+  };
+  const handleOtpRequest = () => {
+    if (!email) {
+      toaster(
+        "OTP feature is still in development mode, please try admin@admin.com/admin",
+      );
+      return;
+    }
+    // setIsOtpRequested(true);
   };
 
   const handlePasswordRequest = () => {
     setIsOtpRequested(false);
   };
 
-  const handleGoogleLogin = () => {};
+  const handleGoogleLogin = () => {
+    toaster("Please use Email/Password, this is still in development.");
+  };
 
-  const handleGitHubLogin = () => {};
-
+  const handleGitHubLogin = () => {
+    toaster("Please use Email/Password, this is still in development.");
+  };
+  if (loggedIn) {
+    return (
+      <div className="h-screen w-full bg-gradient-custom flex flex-col items-center justify-center p-4">
+        <SuccessLottiePlayer />
+      </div>
+    );
+  }
   return (
     <div className="h-screen w-full bg-gradient-custom flex flex-col items-center justify-center p-4">
       <motion.div

@@ -1,23 +1,16 @@
 import { create } from "zustand";
+import { type Store } from "./types";
 import axios from "axios";
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND;
-interface Store {
-  interviewId: string;
-  candidateId: string | null;
-  round: string | null;
-  setInterviewId: (id: string) => void;
-  setCandidateId: (id: string) => void;
-  startInterview: (
-    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  ) => Promise<Blob>;
-  endInterview: () => Promise<boolean>;
-}
-
 export const useStore = create<Store>()((set) => ({
-  interviewId: "",
-  candidateId: null,
+  jwt: null,
+  interviewId: null,
+  candidate: null,
   setInterviewId: (id) => set({ interviewId: id }),
-  setCandidateId: (id) => set({ candidateId: id }),
+  setCandidate: (id, name, email) =>
+    set({
+      candidate: { id: id, name: name, email: email },
+    }),
   round: null,
   startInterview: async (
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
@@ -29,7 +22,6 @@ export const useStore = create<Store>()((set) => ({
     });
     localStorage.setItem("interviewId", response.data.id);
     set({ interviewId: response.data.id });
-    set({ candidateId: response.data.candidateId });
     set({ round: response.data.round });
     const formData = new FormData();
     formData.append("interviewId", response.data.id);
@@ -67,6 +59,41 @@ export const useStore = create<Store>()((set) => ({
     } catch (error) {
       console.error("PDF download error:", error);
       return false;
+    }
+  },
+  signup: async (email: string, name: string, password: string) => {
+    try {
+      const response = await axios.post(`${BACKEND}/auth/signup`, {
+        email,
+        name,
+        password,
+      });
+      if (response.status === 400) throw new Error(response.data.error);
+      return { message: response.data.message as string, success: true };
+    } catch (error) {
+      return { message: error as string, success: false };
+    }
+  },
+  login: async (email: string, password: string) => {
+    try {
+      const response = await axios.post(`${BACKEND}/auth/login`, {
+        email,
+        password,
+      });
+      if (response.status === 401) throw new Error(response.data.error);
+      set({
+        jwt: response.data.token,
+      });
+      set({
+        candidate: {
+          email: response.data.user.email,
+          id: response.data.user.uid,
+          name: response.data.user.name,
+        },
+      });
+      return { message: response.data.message as string, success: true };
+    } catch (error) {
+      return { message: error as string, success: false };
     }
   },
 }));

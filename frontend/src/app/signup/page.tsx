@@ -1,28 +1,50 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Mail, Lock, User, Github } from "lucide-react";
 import { toaster } from "@/components/toast";
+import { useStore } from "@/lib/store";
+import { useRouter } from "next/navigation";
+import { SuccessLottiePlayer } from "@/components/lottie/dotlottie";
 
 export default function Signup() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const handleSignup = (e: React.FormEvent) => {
+  const [signed, setSigned] = useState<boolean>(false);
+  const signUp = useStore((state) => state.signup);
+  const route = useRouter();
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    const response = await signUp(email, name, password);
+    if (!response.success) {
+      toaster(response.message);
+      return;
+    }
+    setSigned(true);
+    setTimeout(() => {
+      route.push("/login");
+    }, 2000);
   };
 
-  const handleGoogleSignup = () => {};
+  const handleGoogleSignup = () => {
+    toaster("Please use Email/Password, this is still in development.");
+  };
 
-  const handleGitHubSignup = () => {};
-  useEffect(() => {
-    toaster("Welcome to the signup page, this is still in development.");
-  }, []);
+  const handleGitHubSignup = () => {
+    toaster("Please use Email/Password, this is still in development.");
+  };
+  if (signed) {
+    return (
+      <div className="h-screen w-full bg-gradient-custom flex flex-col items-center justify-center p-4">
+        <SuccessLottiePlayer />
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen w-full bg-gradient-custom flex flex-col items-center justify-center p-4">

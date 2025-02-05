@@ -4,7 +4,10 @@ import CountdownTimer from "../../../components/CountdownTimer";
 import CamScreen from "./CamScreen";
 import { Button } from "../../../components/ui/button";
 import Loader from "../../../components/loader";
-import { AiLottiePlayer, UserLottiePlayer } from "@/lottie/dotlottie";
+import {
+  AiLottiePlayer,
+  UserLottiePlayer,
+} from "@/components/lottie/dotlottie";
 import { startRecording, stopRecording, endRecording } from "./audioManager";
 import { Square, Mic } from "lucide-react";
 export default function RightPanel({

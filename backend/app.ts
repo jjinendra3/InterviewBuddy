@@ -11,6 +11,7 @@ app.use("/start", require("./routes/start"));
 app.use("/end", require("./routes/end"));
 app.use("/server", require("./routes/server"));
 app.use("/meet", require("./routes/meet"));
+app.use("/auth", require("./routes/auth"));
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
