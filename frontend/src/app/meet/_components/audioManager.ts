@@ -139,7 +139,7 @@ async function sendAudio(
 
   try {
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_BACKEND}/transcribe`,
+      `${process.env.NEXT_PUBLIC_BACKEND}/start`,
       formData,
       { responseType: "arraybuffer" },
     );

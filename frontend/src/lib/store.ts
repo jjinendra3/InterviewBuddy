@@ -23,7 +23,7 @@ export const useStore = create<Store>()((set) => ({
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   ) => {
     setIsLoading(true);
-    const response = await axios.post(`${BACKEND}/interview`, {
+    const response = await axios.post(`${BACKEND}/start`, {
       round: "google-hr",
       candidate: "15234",
     });
@@ -35,7 +35,7 @@ export const useStore = create<Store>()((set) => ({
     formData.append("interviewId", response.data.id);
     formData.append("timeLeft", "TimeLeft: 10:00");
     formData.append("text", "Hello, My name is Alex");
-    const firstAudio = await axios.post(`${BACKEND}/transcribe`, formData, {
+    const firstAudio = await axios.post(`${BACKEND}/meet`, formData, {
       responseType: "arraybuffer",
     });
 
@@ -48,7 +48,7 @@ export const useStore = create<Store>()((set) => ({
       const interviewId = localStorage.getItem("interviewId");
       if (!interviewId) return false;
       localStorage.removeItem("interviewId");
-      const response = await axios.get(`${BACKEND}/end/{interviewId}`, {
+      const response = await axios.get(`${BACKEND}/end/${interviewId}`, {
         responseType: "blob",
       });
       if (response.status === 500) {
