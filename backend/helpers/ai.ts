@@ -1,4 +1,5 @@
-import { chatHistory } from "./types/types";
+
+import { ChatHistory } from "../type/types";
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const dotenv = require("dotenv");
 const fs = require("fs");
@@ -12,7 +13,7 @@ const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash",
   systemInstruction: systemInstruction,
 });
-export const useAi = async (text: string, history: chatHistory[]) => {
+export const useAi = async (text: string, history: ChatHistory[]) => {
   try {
     const chat = model.startChat({
       history: history,

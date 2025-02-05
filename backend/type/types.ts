@@ -1,7 +1,7 @@
 interface ChatHistoryPart {
   text: string;
 }
-export interface chatHistory {
+export interface ChatHistory {
   role: string;
   parts: ChatHistoryPart[];
 }
