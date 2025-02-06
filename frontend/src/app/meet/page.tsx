@@ -11,9 +11,12 @@ import { playAudio } from "./_components/audioManager";
 import { useStore } from "@/lib/store";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-
+import { toaster } from "@/components/toast";
+import { useRouter } from "next/navigation";
 gsap.registerPlugin(useGSAP);
+
 export default function Home() {
+  const router = useRouter();
   const startInterview = useStore((state) => state.startInterview);
   const [code, setCode] = useState("// Your code here");
   const [isLoading, setIsLoading] = useState(false);
@@ -21,6 +24,7 @@ export default function Home() {
   const [aiSpeaking, setAiSpeaking] = useState(false);
   const [minutes, setMinutes] = useState(10);
   const [seconds, setSeconds] = useState(0);
+  const candidate = useStore((state) => state.candidate);
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.hidden) {
@@ -31,6 +35,17 @@ export default function Home() {
     return () =>
       document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, []);
+
+  useEffect(() => {
+    if (!candidate) {
+      toaster("Please Login to start the meet.");
+      setTimeout(() => {
+        router.push("/login");
+      }, 1000);
+      return;
+    }
+  }, []);
+
   useGSAP(() => {
     async function interviewIntro() {
       const introduction = await startInterview(setIsLoading);

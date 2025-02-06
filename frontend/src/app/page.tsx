@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import CompanyCarousel from "./_components/carousel";
 import InterviewRoadmap from "./_components/roadmap";
-
+import Footer from "./_components/footer";
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -28,6 +28,19 @@ export default function Home() {
             >
               <Link href="/login" className="text-white text-lg">
                 Login
+              </Link>
+            </Button>
+            <Button
+              variant="ghost"
+              className="text-foreground hover:text-primary"
+              asChild
+            >
+              <Link
+                href="https://mail.google.com/mail/?view=cm&fs=1&to=jjinendra3@gmail.com&su=Request%20for%20Code&body=Hi,%20I%20would%20like%20to%20see%20the%20code%20of%20this%20project."
+                className="text-white text-lg"
+                target="_blank"
+              >
+                Code
               </Link>
             </Button>
           </nav>
@@ -92,68 +105,8 @@ export default function Home() {
         <CompanyCarousel />
 
         <InterviewRoadmap />
-
-        {/* <Features /> */}
-
-        {/* <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-background">
-          <div className="container mx-auto max-w-5xl">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="space-y-6"
-              >
-                <h2 className="text-3xl sm:text-4xl font-bold text-foreground">
-                  About InterviewBuddy
-                </h2>
-                <p className="text-lg text-muted-foreground">
-                  {
-                    "InterviewBuddy is your AI-powered companion for mastering technical interviews. We understand that preparing for tech interviews can be daunting, especially when you're not sure what to expect."
-                  }
-                </p>
-                <p className="text-lg text-muted-foreground">
-                  {
-                    " Our advanced AI technology adapts to your skill level, providing challenging questions and constructive feedback to help you improve. Whether you're a fresh graduate or an experienced developer looking to switch jobs, InterviewBuddy is here to boost your confidence and sharpen your skills."
-                  }
-                </p>
-                <Button
-                  size="lg"
-                  className="bg-primary text-primary-foreground hover:bg-primary/90"
-                >
-                  Learn More
-                </Button>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
-                <FunFacts />
-              </motion.div>
-            </div>
-          </div>
-        </section> */}
       </main>
-
-      <footer className="py-6 px-4 sm:px-6 lg:px-8 bg-background">
-        <div className="container mx-auto flex flex-col sm:flex-row justify-between items-center text-sm text-muted-foreground">
-          <div className="mb-4 sm:mb-0">
-            &copy; 2025 InterviewBuddy. All rights reserved.
-          </div>
-          <nav className="space-x-4">
-            <Link href="/privacy" className="hover:text-primary">
-              Privacy Policy
-            </Link>
-            <Link href="/terms" className="hover:text-primary">
-              Terms of Service
-            </Link>
-            <Link href="/contact" className="hover:text-primary">
-              Contact Us
-            </Link>
-          </nav>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
