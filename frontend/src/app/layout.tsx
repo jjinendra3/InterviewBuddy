@@ -29,13 +29,13 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            className: "bg-white text-black",
+          }}
+        />
       </body>
-      <Toaster
-        position="top-center"
-        toastOptions={{
-          className: "bg-white text-black",
-        }}
-      />
     </html>
   );
 }

@@ -61,13 +61,15 @@ export default function Home() {
                       Start Interview
                     </Button>
                   </Link>
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="w-full sm:w-auto bg-white text-primary hover:bg-secondary"
-                  >
-                    Sign Up
-                  </Button>
+                  <Link href="/signup">
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      className="w-full sm:w-auto bg-white text-primary hover:bg-secondary"
+                    >
+                      Sign Up
+                    </Button>
+                  </Link>
                 </div>
               </motion.div>
               <motion.div

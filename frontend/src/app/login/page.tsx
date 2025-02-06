@@ -27,7 +27,7 @@ export default function Login() {
     setLoggedIn(true);
     setTimeout(() => {
       route.push("/company");
-    }, 5000);
+    }, 1000);
   };
   const handleOtpRequest = () => {
     if (!email) {

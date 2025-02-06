@@ -7,5 +7,5 @@ export const AiLottiePlayer = () => {
   return <DotLottieReact loop autoplay src="/lotties/aiVoice.lottie" />;
 };
 export const SuccessLottiePlayer = () => {
-  return <DotLottieReact loop autoplay src="/lotties.tick.lottie" />;
+  return <DotLottieReact loop autoplay src="/lotties/tick.lottie" />;
 };
