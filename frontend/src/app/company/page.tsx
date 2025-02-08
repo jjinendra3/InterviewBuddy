@@ -68,7 +68,7 @@ export default function ChooseCompany() {
           className="bg-primary text-primary-foreground hover:bg-primary/90"
           disabled={!selectedCompany || selectedCompany !== "Google"}
           onClick={() => {
-            router.push("/company/style");
+            router.push(`/company/${selectedCompany?.toLowerCase()}`);
           }}
         >
           Start Interview

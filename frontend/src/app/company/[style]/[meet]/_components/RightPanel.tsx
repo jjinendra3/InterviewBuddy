@@ -1,9 +1,9 @@
 "use client";
-import { ResizablePanel } from "../../../components/ui/resizable";
-import CountdownTimer from "../../../components/CountdownTimer";
+import { ResizablePanel } from "../../../../../components/ui/resizable";
+import CountdownTimer from "../../../../../components/CountdownTimer";
 import CamScreen from "./CamScreen";
-import { Button } from "../../../components/ui/button";
-import Loader from "../../../components/loader";
+import { Button } from "../../../../../components/ui/button";
+import Loader from "../../../../../components/loader";
 import {
   AiLottiePlayer,
   UserLottiePlayer,

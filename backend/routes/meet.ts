@@ -29,11 +29,12 @@ app.post("/", upload, async (req, res) => {
     const interviewId = req.body.interviewId;
     const timeLeft = req.body.timeLeft ?? "";
     const text = req.body.text;
+    const round = req.body.round;
     const response = text == null ? await transcribeFile() : text;
     const history = await getChatHistory(interviewId);
-    const textGen = await useAi(response + timeLeft, history);
+    const textGen = await useAi(round, response + timeLeft, history);
     await getAudio(textGen);
-    const outputAudio = path.join(__dirname, "output.wav");
+    const outputAudio = path.join(__dirname, "../output.wav");
     if (!fs.existsSync(outputAudio)) throw "Not Found!";
     await saveToDbUser(response, interviewId);
     await saveToDbModel(textGen, interviewId);
@@ -42,7 +43,7 @@ app.post("/", upload, async (req, res) => {
     console.log(error);
     return res
       .status(500)
-      .sendFile(path.join(__dirname, "audio_files/error.wav"));
+      .sendFile(path.join(__dirname, "../audio_files/error.wav"));
   }
 });
 module.exports = app;

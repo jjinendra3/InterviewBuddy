@@ -4,23 +4,19 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
   ResizableHandle,
-} from "../../../components/ui/resizable";
+} from "../../../../../components/ui/resizable";
 import { CircleUserRound } from "lucide-react";
-
+import { usePathname } from "next/navigation";
 interface LeftPanelProps {
   code: string;
   setCode: (code: string) => void;
-  interViewStyle: "HR" | "DSA";
 }
 
-export default function LeftPanel({
-  code,
-  setCode,
-  interViewStyle,
-}: LeftPanelProps) {
+export default function LeftPanel({ code, setCode }: LeftPanelProps) {
+  const pathname = usePathname();
   return (
     <ResizablePanel defaultSize={75} className="flex flex-col h-full">
-      {interViewStyle === "DSA" ? (
+      {!pathname.includes("hr") ? (
         <ResizablePanelGroup direction="horizontal">
           <ResizablePanel
             defaultSize={25}

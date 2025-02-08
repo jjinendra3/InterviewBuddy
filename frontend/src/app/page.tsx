@@ -1,5 +1,5 @@
 "use client";
-
+import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -7,7 +7,17 @@ import { Button } from "@/components/ui/button";
 import CompanyCarousel from "./_components/carousel";
 import InterviewRoadmap from "./_components/roadmap";
 import Footer from "./_components/footer";
+import { toast } from "sonner";
 export default function Home() {
+  useEffect(() => {
+    toast(
+      "Welcome to InterviewBuddy! This piece of software is in still in continous development. Please expect bugs and issues. Thank you for your your cooperation.",
+      {
+        duration: 10000,
+      },
+    );
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <header className="py-6 px-4 sm:px-6 lg:px-8 bg-[#FFA09B] ">

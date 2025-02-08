@@ -15,7 +15,8 @@ app.get("/:id", async (req, res) => {
       process.env.INTERVIEW_END_PROMPT_PATH,
       "utf-8",
     );
-    const textGen = await useAi(endInterviewPrompt, history);
+    //TODO: FIX THIS
+    const textGen = await useAi("google-hr", endInterviewPrompt, history);
     await pdfGenerator(textGen);
   } catch (error) {
     const outputReport = path.join(__dirname, "output.pdf");

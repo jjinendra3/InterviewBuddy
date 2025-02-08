@@ -6,35 +6,38 @@ export const useStore = create<Store>()((set) => ({
   jwt: null,
   interviewId: null,
   candidate: null,
+  startAudio: null,
+  setStartAudio: (audio) => set({ startAudio: audio }),
   setInterviewId: (id) => set({ interviewId: id }),
   setCandidate: (id, name, email) =>
     set({
       candidate: { id: id, name: name, email: email },
     }),
   round: null,
-  startInterview: async (
-    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  ) => {
-    setIsLoading(true);
-    const response = await axios.post(`${BACKEND}/start`, {
-      round: "google-hr",
-      candidate: "15234",
-    });
-    localStorage.setItem("interviewId", response.data.id);
-    set({ interviewId: response.data.id });
-    set({ round: response.data.round });
-    const formData = new FormData();
-    formData.append("interviewId", response.data.id);
-    formData.append("timeLeft", "TimeLeft: 10:00");
-    formData.append("text", "Hello, My name is Alex");
-    const firstAudio = await axios.post(`${BACKEND}/meet`, formData, {
-      responseType: "arraybuffer",
-    });
+  startInterview: async () =>
+    // setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
+    {
+      // setIsLoading(true);
+      const response = await axios.post(`${BACKEND}/start`, {
+        round: "google-hr",
+        candidate: "15234",
+      });
+      localStorage.setItem("interviewId", response.data.id);
+      set({ interviewId: response.data.id });
+      set({ round: response.data.round });
+      const formData = new FormData();
+      formData.append("interviewId", response.data.id);
+      formData.append("timeLeft", "TimeLeft: 10:00");
+      formData.append("text", "Hello, My name is Alex");
+      const firstAudio = await axios.post(`${BACKEND}/meet`, formData, {
+        responseType: "arraybuffer",
+      });
 
-    const audioBlob = new Blob([firstAudio.data], { type: "audio/wav" });
-    setIsLoading(false);
-    return audioBlob;
-  },
+      const audioBlob = new Blob([firstAudio.data], { type: "audio/wav" });
+      set({ startAudio: audioBlob });
+      // setIsLoading(false);
+      return response.data.id;
+    },
   endInterview: async () => {
     try {
       const interviewId = localStorage.getItem("interviewId");

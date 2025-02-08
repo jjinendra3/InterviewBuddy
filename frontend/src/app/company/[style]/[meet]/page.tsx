@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import LeftPanel from "@/app/meet/_components/LeftPanel";
-import RightPanel from "@/app/meet/_components/RightPanel";
+import LeftPanel from "./_components/LeftPanel";
+import RightPanel from "./_components/RightPanel";
 import {
   ResizableHandle,
   ResizablePanelGroup,
@@ -17,13 +17,15 @@ gsap.registerPlugin(useGSAP);
 
 export default function Home() {
   const router = useRouter();
-  const startInterview = useStore((state) => state.startInterview);
+  // const startInterview = useStore((state) => state.startInterview);
   const [code, setCode] = useState("// Your code here");
   const [isLoading, setIsLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [aiSpeaking, setAiSpeaking] = useState(false);
   const [minutes, setMinutes] = useState(10);
   const [seconds, setSeconds] = useState(0);
+  const startAudio = useStore((state) => state.startAudio);
+  const setStartAudio = useStore((state) => state.setStartAudio);
   const candidate = useStore((state) => state.candidate);
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -48,13 +50,16 @@ export default function Home() {
 
   useGSAP(() => {
     async function interviewIntro() {
-      const introduction = await startInterview(setIsLoading);
-      await playAudio(
-        introduction,
-        setIsLoading,
-        setIsRecording,
-        setAiSpeaking,
-      );
+      if (startAudio) {
+        await playAudio(
+          startAudio,
+          setIsLoading,
+          setIsRecording,
+          setAiSpeaking,
+        );
+        console.log("win");
+        setStartAudio(null);
+      }
     }
     interviewIntro();
   });
@@ -63,11 +68,7 @@ export default function Home() {
   return (
     <div className="h-screen w-screen flex bg-gradient-to-br from-[#FFE6C9] to-[#FFA09B]">
       <ResizablePanelGroup direction="horizontal">
-        <LeftPanel
-          code={code}
-          setCode={setCode}
-          interViewStyle={interViewStyle}
-        />
+        <LeftPanel code={code} setCode={setCode} />
         <ResizableHandle></ResizableHandle>
         <RightPanel
           isLoading={isLoading}

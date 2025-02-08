@@ -8,8 +8,7 @@ datasource db {
 }
 
 model User {
-  uid        String     @id @default(uuid())
-  email      String      @unique
+  email      String      @id
   name       String
   password   String
   interviews Interview[]

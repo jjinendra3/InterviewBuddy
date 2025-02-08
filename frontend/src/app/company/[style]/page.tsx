@@ -5,15 +5,19 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { UserCircle, Code } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import { useStore } from "@/lib/store";
+import { toast } from "sonner";
 
 const interviewTypes = [
   {
+    code: "hr",
     name: "HR Interview",
     icon: UserCircle,
     description: "Practice your soft skills and behavioral questions",
   },
   {
+    code: "dsa",
     name: "DSA Interview",
     icon: Code,
     description: "Tackle coding challenges and algorithm problems",
@@ -23,6 +27,21 @@ const interviewTypes = [
 export default function ChooseInterviewType() {
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const router = useRouter();
+  const pathname = usePathname();
+  const introduction = useStore((state) => state.startInterview);
+  if (
+    !(
+      pathname.split("/")[2] == "meta" ||
+      pathname.split("/")[2] == "google" ||
+      pathname.split("/")[2] == "apple" ||
+      pathname.split("/")[2] == "amazon" ||
+      pathname.split("/")[2] == "netflix" ||
+      pathname.split("/")[2] == "nvidia"
+    )
+  ) {
+    router.push("/company");
+    return;
+  }
   return (
     <div className="h-screen w-full bg-gradient-custom flex flex-col items-center justify-center p-4">
       <motion.h1
@@ -38,9 +57,9 @@ export default function ChooseInterviewType() {
           <motion.button
             key={type.name}
             className={`bg-white rounded-lg p-6 flex flex-col items-center justify-center transition-all ${
-              selectedType === type.name ? "ring-4 ring-primary" : ""
+              selectedType === type.code ? "ring-4 ring-primary" : ""
             }`}
-            onClick={() => setSelectedType(type.name)}
+            onClick={() => setSelectedType(type.code)}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -67,11 +86,20 @@ export default function ChooseInterviewType() {
           size="lg"
           className="bg-primary text-primary-foreground hover:bg-primary/90"
           disabled={!selectedType}
-          onClick={() => {
-            router.push("/meet");
+          onClick={async () => {
+            const load = toast.loading("Loading Interview...");
+            const response = await introduction();
+            toast.success("Lets Go!🚀", {
+              id: load,
+            });
+            console.log(
+              `/company/${pathname.split("/")[2]}-${selectedType}/${response}`,
+            );
+            router.push(
+              `/company/${pathname.split("/")[2]}-${selectedType}/${response}`,
+            );
           }}
         >
-          {/* TODO: create an instructions page berfore starting the interview */}
           Start Interview
         </Button>
       </motion.div>
