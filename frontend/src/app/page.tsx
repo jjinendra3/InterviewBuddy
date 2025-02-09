@@ -8,13 +8,11 @@ import CompanyCarousel from "./_components/carousel";
 import InterviewRoadmap from "./_components/roadmap";
 import Footer from "./_components/footer";
 import { toast } from "sonner";
+import { Github } from "lucide-react";
 export default function Home() {
   useEffect(() => {
     toast(
       "Welcome to InterviewBuddy! This piece of software is in still in continous development. Please expect bugs and issues. Thank you for your your cooperation.",
-      {
-        duration: 10000,
-      },
     );
   }, []);
 
@@ -50,7 +48,7 @@ export default function Home() {
                 className="text-white text-lg"
                 target="_blank"
               >
-                Code
+                <Github color="black" />
               </Link>
             </Button>
           </nav>

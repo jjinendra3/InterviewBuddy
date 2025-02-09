@@ -7,7 +7,7 @@ interface Auth {
   message: string;
   success: boolean;
 }
-export interface Store {
+export interface GeneralStore {
   jwt: string | null;
   interviewId: string | null;
   candidate: Candidate | null;
@@ -21,4 +21,20 @@ export interface Store {
   endInterview: () => Promise<boolean>;
   signup: (email: string, name: string, password: string) => Promise<Auth>;
   login: (email: string, password: string) => Promise<Auth>;
+}
+
+export interface AudioStore {
+  isRecording: boolean;
+  aiSpeaking: boolean;
+  isLoading: boolean;
+  setIsLoading: (loading: boolean) => void;
+  setAiSpeaking: (speaking: boolean) => void;
+  setIsRecording: (recording: boolean) => void;
+  playPing: () => Promise<void>;
+  startRecording: () => void;
+  stopRecording: () => void;
+  record: () => void;
+  playAudio: (audioBlob: Blob) => void;
+  sendAudio: (audioBlob: Blob) => void;
+  endRecording: () => void;
 }

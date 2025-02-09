@@ -7,21 +7,18 @@ import {
   ResizableHandle,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { playAudio } from "./_components/audioManager";
 import { useStore } from "@/lib/store";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { toaster } from "@/components/toast";
 import { useRouter } from "next/navigation";
+import { audioStore } from "@/lib/audioStore";
 gsap.registerPlugin(useGSAP);
 
 export default function Home() {
   const router = useRouter();
-  // const startInterview = useStore((state) => state.startInterview);
   const [code, setCode] = useState("// Your code here");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
-  const [aiSpeaking, setAiSpeaking] = useState(false);
+  const { playAudio } = audioStore();
   const [minutes, setMinutes] = useState(10);
   const [seconds, setSeconds] = useState(0);
   const startAudio = useStore((state) => state.startAudio);
@@ -46,18 +43,13 @@ export default function Home() {
       }, 1000);
       return;
     }
+    //eslint-disable-next-line
   }, []);
 
   useGSAP(() => {
     async function interviewIntro() {
       if (startAudio) {
-        await playAudio(
-          startAudio,
-          setIsLoading,
-          setIsRecording,
-          setAiSpeaking,
-        );
-        console.log("win");
+        await playAudio(startAudio);
         setStartAudio(null);
       }
     }
@@ -71,12 +63,6 @@ export default function Home() {
         <LeftPanel code={code} setCode={setCode} />
         <ResizableHandle></ResizableHandle>
         <RightPanel
-          isLoading={isLoading}
-          isRecording={isRecording}
-          aiSpeaking={aiSpeaking}
-          setIsRecording={setIsRecording}
-          setIsLoading={setIsLoading}
-          setAiSpeaking={setAiSpeaking}
           minutes={minutes}
           seconds={seconds}
           setMinutes={setMinutes}

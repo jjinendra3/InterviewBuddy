@@ -8,31 +8,21 @@ import {
   AiLottiePlayer,
   UserLottiePlayer,
 } from "@/components/lottie/dotlottie";
-import { startRecording, stopRecording, endRecording } from "./audioManager";
 import { Square, Mic } from "lucide-react";
+import { audioStore } from "@/lib/audioStore";
 export default function RightPanel({
-  isLoading,
-  isRecording,
-  setIsLoading,
-  setIsRecording,
-  aiSpeaking,
-  setAiSpeaking,
   minutes,
-  setMinutes,
   seconds,
+  setMinutes,
   setSeconds,
 }: {
-  isLoading: boolean;
-  isRecording: boolean;
-  aiSpeaking: boolean;
   minutes: number;
   seconds: number;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  setIsRecording: React.Dispatch<React.SetStateAction<boolean>>;
-  setAiSpeaking: React.Dispatch<React.SetStateAction<boolean>>;
   setMinutes: React.Dispatch<React.SetStateAction<number>>;
   setSeconds: React.Dispatch<React.SetStateAction<number>>;
 }) {
+  const { isLoading, isRecording, aiSpeaking, startRecording, stopRecording } =
+    audioStore();
   return (
     <ResizablePanel
       defaultSize={25}
@@ -70,34 +60,19 @@ export default function RightPanel({
       )}
       <div className="flex justify-center space-x-4">
         <Button
-          onClick={
-            isRecording
-              ? () => stopRecording(setIsRecording)
-              : () =>
-                  startRecording(setIsLoading, setIsRecording, setAiSpeaking)
-          }
+          onClick={isRecording ? () => stopRecording() : () => startRecording()}
           variant={isRecording ? "destructive" : "default"}
           className="w-32"
         >
           {isRecording ? (
             <>
-              <Square className="mr-2 h-4 w-4" /> Send to AI
+              <Square className="mr-2 h-4 w-4" /> Speak Now...
             </>
           ) : (
             <>
-              <Mic className="mr-2 h-4 w-4" /> Start AI
+              <Mic className="mr-2 h-4 w-4" /> Start Speaking
             </>
           )}
-        </Button>
-        <Button
-          onClick={() => {
-            endRecording(setIsRecording);
-            // setIsLoading(false);
-          }}
-          disabled={!isRecording}
-          className="w-32"
-        >
-          End AI
         </Button>
       </div>
     </ResizablePanel>
