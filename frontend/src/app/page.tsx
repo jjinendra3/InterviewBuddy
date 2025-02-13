@@ -42,11 +42,7 @@ export default function Home() {
               className="text-foreground hover:text-primary"
               asChild
             >
-              <Link
-                href="https://mail.google.com/mail/?view=cm&fs=1&to=jjinendra3@gmail.com&su=Request%20for%20Code&body=Hi,%20I%20would%20like%20to%20see%20the%20code%20of%20this%20project."
-                className="text-white text-lg"
-                target="_blank"
-              >
+              <Link href="/code" className="text-white text-lg">
                 Code
               </Link>
             </Button>
