@@ -10,6 +10,7 @@ import { toaster } from "@/components/toast";
 import { useStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
 import { SuccessLottiePlayer } from "@/components/lottie/dotlottie";
+
 export default function Signup() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

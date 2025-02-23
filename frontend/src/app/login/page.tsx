@@ -10,6 +10,7 @@ import { toaster } from "@/components/toast";
 import { useStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
 import { SuccessLottiePlayer } from "@/components/lottie/dotlottie";
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,7 +33,7 @@ export default function Login() {
   const handleOtpRequest = () => {
     if (!email) {
       toaster(
-        "OTP feature is still in development mode, please try admin@admin.com/admin",
+        "OTP feature is still in development mode, please try admin@admin.com/admin"
       );
       return;
     }

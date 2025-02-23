@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { type GeneralStore } from "./types";
 import axios from "axios";
+import { supabase } from "@/lib/supabase";
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND;
 export const useStore = create<GeneralStore>()((set, get) => ({
   jwt: null,
@@ -63,37 +64,55 @@ export const useStore = create<GeneralStore>()((set, get) => ({
   },
   signup: async (email: string, name: string, password: string) => {
     try {
-      const response = await axios.post(`${BACKEND}/auth/signup`, {
-        email,
-        name,
-        password,
+      const { error } = await supabase.auth.signUp({
+        email: email,
+        password: password,
+        options: {
+          data: {
+            name: name,
+          },
+        },
       });
-      if (response.status === 400) throw new Error(response.data.error);
-      return { message: response.data.message as string, success: true };
+      if (error) throw new Error(error.message);
+      return { message: "User SignUp Successful!" as string, success: true };
     } catch (error) {
       return { message: error as string, success: false };
     }
   },
   login: async (email: string, password: string) => {
     try {
-      const response = await axios.post(`${BACKEND}/auth/login`, {
-        email,
-        password,
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
       });
-      if (response.status === 401) throw new Error(response.data.error);
+      if (error) throw error.message;
       set({
-        jwt: response.data.token,
+        jwt: data.session.access_token,
       });
+      const session = await supabase.auth.getSession();
+      console.log(session.data);
+      const response = await supabase.auth.getUser(data.session.access_token);
+      console.log(response.data, response.error);
+      // if (token) {
+      // }
       set({
         candidate: {
-          email: response.data.user.email,
-          id: response.data.user.uid,
-          name: response.data.user.name,
+          email: data.user.email ?? "",
+          id: data.user.id,
+          name: data.user.user_metadata.full_name,
         },
       });
-      return { message: response.data.message as string, success: true };
+      return { message: "Logged In!" as string, success: true };
     } catch (error) {
       return { message: error as string, success: false };
+    }
+  },
+  logout: async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error.message;
+    } catch (error) {
+      return error;
     }
   },
 }));
