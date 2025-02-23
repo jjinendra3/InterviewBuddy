@@ -13,11 +13,11 @@ app.get("/:id", async (req, res) => {
     const history = await getChatHistory(interviewId);
     const endInterviewPrompt = fs.readFileSync(
       process.env.INTERVIEW_END_PROMPT_PATH,
-      "utf-8",
+      "utf-8"
     );
-    //TODO: FIX THIS
-    const textGen = await useAi("google-hr", endInterviewPrompt, history);
-    await pdfGenerator(textGen);
+    // //TODO: INTRODUCE A NEW GENERATETEXT FOR THIS
+    const textGen = await useAi("google-hr", endInterviewPrompt, history, null);
+    await pdfGenerator(textGen.reply);
   } catch (error) {
     const outputReport = path.join(__dirname, "output.pdf");
     if (!fs.existsSync(outputReport)) return res.status(500).send(error);

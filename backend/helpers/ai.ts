@@ -1,28 +1,48 @@
-import { ChatHistory } from "../type/types";
 import { interviewRound } from "./interviewRound";
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-const dotenv = require("dotenv");
+import { GEMINI_1_5_FLASH } from "../ai";
+import { generateObject, type CoreUserMessage } from "ai";
+import { z } from "zod";
 const fs = require("fs");
+const dotenv = require("dotenv");
 dotenv.config();
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+const schema = z.object({
+  speechToText: z.string(),
+  reply: z.string(),
+});
 
 export const useAi = async (
   round: string,
   text: string,
-  history: ChatHistory[],
+  history: CoreUserMessage[],
+  timeLeft?: string
 ) => {
   try {
+    const audioInput: CoreUserMessage = {
+      role: "user",
+      content: text
+        ? text
+        : [
+            {
+              type: "text",
+              text: `TimeLeft: ${timeLeft}`,
+            },
+            {
+              type: "file",
+              mimeType: "audio/mpeg",
+              data: fs.readFileSync("./uploads/recording.webm"),
+            },
+          ],
+    };
     const roundPath = await interviewRound("google-hr");
     const systemInstruction = fs.readFileSync(roundPath, "utf8");
-    const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
-      systemInstruction: systemInstruction,
+    const response = await generateObject({
+      model: GEMINI_1_5_FLASH,
+      system: systemInstruction,
+      messages: [...history, audioInput],
+      schema: schema,
     });
-    const chat = model.startChat({
-      history: history,
-    });
-    const result = await chat.sendMessage(text);
-    return result.response.text();
+    return response.object;
   } catch (error) {
     console.log(error);
   }

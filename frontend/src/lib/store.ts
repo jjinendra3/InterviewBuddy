@@ -15,7 +15,7 @@ export const useStore = create<GeneralStore>()((set, get) => ({
     }),
   round: null,
   startInterview: async () => {
-    if (!get().candidate) return;
+    if (!get().candidate?.email) return;
     const response = await axios.post(`${BACKEND}/start`, {
       round: "google-hr",
       candidate: get().candidate?.email,

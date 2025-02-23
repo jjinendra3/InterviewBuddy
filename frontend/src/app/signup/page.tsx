@@ -10,7 +10,6 @@ import { toaster } from "@/components/toast";
 import { useStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
 import { SuccessLottiePlayer } from "@/components/lottie/dotlottie";
-
 export default function Signup() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -18,17 +17,21 @@ export default function Signup() {
   const [signed, setSigned] = useState<boolean>(false);
   const signUp = useStore((state) => state.signup);
   const route = useRouter();
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const response = await signUp(email, name, password);
-    if (!response.success) {
-      toaster(response.message);
-      return;
+  const handleSignup = async () => {
+    try {
+      const response = await signUp(email, name, password);
+      if (!response.success) {
+        toaster(response.message);
+        return;
+      }
+      setSigned(true);
+      setTimeout(() => {
+        route.push("/login");
+      }, 1000);
+    } catch (error) {
+      console.log(error);
+      toaster("Internal Server Error");
     }
-    setSigned(true);
-    setTimeout(() => {
-      route.push("/login");
-    }, 1000);
   };
 
   const handleGoogleSignup = () => {
@@ -57,7 +60,7 @@ export default function Signup() {
         <h1 className="text-3xl font-bold mb-6 text-center text-gradient">
           Start Your Journey.
         </h1>
-        <form onSubmit={handleSignup} className="space-y-4">
+        <div className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="name" className="text-sm font-medium text-gray-700">
               Name
@@ -125,12 +128,12 @@ export default function Signup() {
             </div>
           </div>
           <Button
-            type="submit"
+            onClick={handleSignup}
             className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
           >
             Sign up
           </Button>
-        </form>
+        </div>
         <div className="mt-6">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">

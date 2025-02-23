@@ -30,14 +30,13 @@ app.post("/", upload, async (req, res) => {
     const timeLeft = req.body.timeLeft ?? "";
     const text = req.body.text;
     const round = req.body.round;
-    const response = text == null ? await transcribeFile() : text;
     const history = await getChatHistory(interviewId);
-    const textGen = await useAi(round, response + timeLeft, history);
-    await getAudio(textGen);
+    const textGen = await useAi(round, text, timeLeft, history);
+    await getAudio(textGen.reply);
     const outputAudio = path.join(__dirname, "../output.wav");
     if (!fs.existsSync(outputAudio)) throw "Not Found!";
-    await saveToDbUser(response, interviewId);
-    await saveToDbModel(textGen, interviewId);
+    await saveToDbUser(textGen.speechToText, interviewId);
+    await saveToDbModel(textGen.reply, interviewId);
     return res.status(200).sendFile(outputAudio);
   } catch (error) {
     console.log(error);

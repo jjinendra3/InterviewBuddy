@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import * as faceapi from "face-api.js";
-
+//TODO: END THE MEET IS CAMERA IS OFF OR GIVE WARNING
+//TODO: ADD A TIMER WHEN CAMER AHAS TWO FACES OR THE CAMERA IS OFF, IF ABOVE 20 SECONDS, END THE MEET
 const ProctorVideo = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);

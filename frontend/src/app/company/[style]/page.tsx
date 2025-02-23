@@ -89,15 +89,12 @@ export default function ChooseInterviewType() {
           onClick={async () => {
             const load = toast.loading("Loading Interview...");
             const response = await introduction();
+            router.push(
+              `/company/${pathname.split("/")[2]}-${selectedType}/${response}`
+            );
             toast.success("Lets Go!🚀", {
               id: load,
             });
-            console.log(
-              `/company/${pathname.split("/")[2]}-${selectedType}/${response}`,
-            );
-            router.push(
-              `/company/${pathname.split("/")[2]}-${selectedType}/${response}`,
-            );
           }}
         >
           Start Interview
