@@ -10,24 +10,28 @@ import { toaster } from "@/components/toast";
 import { useStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
 import { SuccessLottiePlayer } from "@/components/lottie/dotlottie";
-
+import { auth } from "@/lib/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 export default function Signup() {
+  const route = useRouter();
+  if (auth.currentUser) route.push("/");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [signed, setSigned] = useState<boolean>(false);
   const signUp = useStore((state) => state.signup);
-  const route = useRouter();
   const handleSignup = async () => {
     try {
-      const response = await signUp(email, name, password);
-      if (!response.success) {
-        toaster(response.message);
-        return;
-      }
+      const resp = await createUserWithEmailAndPassword(auth, email, password);
+      console.log(resp);
+      // const response = await signUp(email, name, password);
+      // if (!response.success) {
+      //   toaster(response.message);
+      //   return;
+      // }
       setSigned(true);
       setTimeout(() => {
-        route.push("/login");
+        route.push("/");
       }, 1000);
     } catch (error) {
       console.log(error);

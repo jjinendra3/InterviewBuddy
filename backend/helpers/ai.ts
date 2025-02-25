@@ -3,8 +3,6 @@ import { GEMINI_1_5_FLASH } from "../ai";
 import { generateObject, type CoreUserMessage } from "ai";
 import { z } from "zod";
 const fs = require("fs");
-const dotenv = require("dotenv");
-dotenv.config();
 
 const schema = z.object({
   speechToText: z.string(),

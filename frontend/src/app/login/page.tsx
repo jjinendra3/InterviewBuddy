@@ -10,25 +10,30 @@ import { toaster } from "@/components/toast";
 import { useStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
 import { SuccessLottiePlayer } from "@/components/lottie/dotlottie";
-
+import { auth } from "@/lib/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 export default function Login() {
+  const route = useRouter();
+  if (auth.currentUser) route.push("/");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isOtpRequested, setIsOtpRequested] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const login = useStore((state) => state.login);
-  const route = useRouter();
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await login(email, password);
-    if (!response.success) {
-      toaster(response.message);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      setLoggedIn(true);
+      setTimeout(() => {
+        route.push("/company");
+      }, 300);
+      //eslint-disable-next-line
+    } catch (error: any) {
+      console.log(error);
+      toaster(error.toString());
       return;
     }
-    setLoggedIn(true);
-    setTimeout(() => {
-      route.push("/company");
-    }, 300);
   };
   const handleOtpRequest = () => {
     if (!email) {
@@ -44,8 +49,14 @@ export default function Login() {
     setIsOtpRequested(false);
   };
 
-  const handleGoogleLogin = () => {
-    toaster("Please use Email/Password, this is still in development.");
+  const handleGoogleLogin = async () => {
+    try {
+      await supabase.auth.signInWithOAuth({
+        provider: "google",
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleGitHubLogin = () => {

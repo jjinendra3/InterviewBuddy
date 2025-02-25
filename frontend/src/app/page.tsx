@@ -8,13 +8,14 @@ import CompanyCarousel from "./_components/carousel";
 import InterviewRoadmap from "./_components/roadmap";
 import Footer from "./_components/footer";
 import { toast } from "sonner";
+import { auth } from "@/lib/firebase";
 export default function Home() {
   useEffect(() => {
     toast(
-      "Welcome to InterviewBuddy! This piece of software is in still in continous development. Please expect bugs and issues. Thank you for your your cooperation.",
+      "Welcome to InterviewBuddy! This piece of software is in still in continous development. Please expect bugs and issues. Thank you for your your cooperation."
     );
   }, []);
-
+  if (auth.currentUser) console.log("bruh");
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <header className="py-6 px-4 sm:px-6 lg:px-8 bg-[#FFA09B] ">
@@ -33,9 +34,15 @@ export default function Home() {
               className="text-foreground hover:text-primary"
               asChild
             >
-              <Link href="/login" className="text-white text-lg">
-                Login
-              </Link>
+              {!auth.currentUser ? (
+                <Link href="/login" className="text-white text-lg">
+                  Login
+                </Link>
+              ) : (
+                <Button onClick={async () => await auth.signOut()}>
+                  Signout
+                </Button>
+              )}
             </Button>
             <Button
               variant="ghost"
@@ -77,15 +84,17 @@ export default function Home() {
                       Start Interview
                     </Button>
                   </Link>
-                  <Link href="/signup">
-                    <Button
-                      variant="outline"
-                      size="lg"
-                      className="w-full sm:w-auto bg-white text-primary hover:bg-secondary"
-                    >
-                      Sign Up
-                    </Button>
-                  </Link>
+                  {!auth.currentUser && (
+                    <Link href="/signup">
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        className="w-full sm:w-auto bg-white text-primary hover:bg-secondary"
+                      >
+                        Sign Up
+                      </Button>
+                    </Link>
+                  )}
                 </div>
               </motion.div>
               <motion.div
