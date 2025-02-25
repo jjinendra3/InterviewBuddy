@@ -24,7 +24,7 @@ export default function Home() {
   const startAudio = useStore((state) => state.startAudio);
   const setStartAudio = useStore((state) => state.setStartAudio);
   const candidate = useStore((state) => state.candidate);
-  if(!candidate) {
+  if (!candidate) {
     console.log("Please Login to start the meet.");
   }
   useEffect(() => {

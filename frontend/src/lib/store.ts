@@ -79,7 +79,7 @@ export const useStore = create<GeneralStore>()((set, get) => ({
       const response = await createUserWithEmailAndPassword(
         auth,
         email,
-        password
+        password,
       );
       const user = await axios.post(`${BACKEND}/user`, {
         email: email,

@@ -90,7 +90,7 @@ export default function ChooseInterviewType() {
             const load = toast.loading("Loading Interview...");
             const response = await introduction();
             router.push(
-              `/company/${pathname.split("/")[2]}-${selectedType}/${response}`
+              `/company/${pathname.split("/")[2]}-${selectedType}/${response}`,
             );
             toast.success("Lets Go!🚀", {
               id: load,

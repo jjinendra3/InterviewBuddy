@@ -13,7 +13,7 @@ export const useAi = async (
   round: string,
   text: string,
   history: CoreUserMessage[],
-  timeLeft?: string
+  timeLeft?: string,
 ) => {
   try {
     const audioInput: CoreUserMessage = {
