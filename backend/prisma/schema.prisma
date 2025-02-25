@@ -8,9 +8,9 @@ datasource db {
 }
 
 model User {
-  email      String      @id
+  uid        String      @id @default(uuid())
   name       String
-  password   String
+  email      String
   interviews Interview[]
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
@@ -25,7 +25,7 @@ model Interview {
   rating        Int?
   feedback      String?
   evaluation    String         @default("Pending")
-  candidate     User           @relation(fields: [candidateId], references: [email])
+  candidate     User           @relation(fields: [candidateId], references: [uid])
 }
 
 model Conversation {

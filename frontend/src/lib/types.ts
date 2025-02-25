@@ -8,7 +8,6 @@ interface Auth {
   success: boolean;
 }
 export interface GeneralStore {
-  jwt: string | null;
   interviewId: string | null;
   candidate: Candidate | null;
   round: string | null;
@@ -21,6 +20,9 @@ export interface GeneralStore {
   endInterview: () => Promise<boolean>;
   signup: (email: string, name: string, password: string) => Promise<Auth>;
   login: (email: string, password: string) => Promise<Auth>;
+  logout: () => Promise<Auth>;
+  loginWithGoogle: () => Promise<Auth>;
+  loginWithGitHub: () => Promise<Auth>;
 }
 
 export interface AudioStore {

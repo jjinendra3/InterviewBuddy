@@ -5,13 +5,12 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { Mail, Lock, User, Github } from "lucide-react";
+import { Mail, Lock, User } from "lucide-react";
 import { toaster } from "@/components/toast";
 import { useStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
 import { SuccessLottiePlayer } from "@/components/lottie/dotlottie";
 import { auth } from "@/lib/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
 export default function Signup() {
   const route = useRouter();
   if (auth.currentUser) route.push("/");
@@ -20,35 +19,27 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [signed, setSigned] = useState<boolean>(false);
   const signUp = useStore((state) => state.signup);
+  const loginWithGoogle = useStore((state) => state.loginWithGoogle);
+  // const loginWithGitHub = useStore((state) => state.loginWithGitHub);
   const handleSignup = async () => {
     try {
-      const resp = await createUserWithEmailAndPassword(auth, email, password);
-      console.log(resp);
-      // const response = await signUp(email, name, password);
-      // if (!response.success) {
-      //   toaster(response.message);
-      //   return;
-      // }
+      const response = await signUp(email, name, password);
+      if (!response.success) {
+        throw new Error(response.message);
+      }
       setSigned(true);
       setTimeout(() => {
         route.push("/");
       }, 1000);
-    } catch (error) {
-      console.log(error);
-      toaster("Internal Server Error");
+      //eslint-disable-next-line
+    } catch (error: any) {
+      toaster(error);
     }
   };
 
-  const handleGoogleSignup = () => {
-    toaster("Please use Email/Password, this is still in development.");
-  };
-
-  const handleGitHubSignup = () => {
-    toaster("Please use Email/Password, this is still in development.");
-  };
   if (signed) {
     return (
-      <div className="h-screen w-full bg-gradient-custom flex flex-col items-center justify-center p-4">
+      <div className="h-16 w-16 bg-gradient-custom flex flex-col items-center justify-center p-4">
         <SuccessLottiePlayer />
       </div>
     );
@@ -150,9 +141,17 @@ export default function Signup() {
               </span>
             </div>
           </div>
-          <div className="mt-6 grid grid-cols-2 gap-3">
+          <div className="mt-6 flex w-full gap-3">
             <Button
-              onClick={handleGoogleSignup}
+              onClick={async () => {
+                try {
+                  const response = await loginWithGoogle();
+                  if (!response.success) throw new Error(response.message);
+                  route.push("/");
+                } catch (error) {
+                  toaster(error as string);
+                }
+              }}
               variant="outline"
               className="w-full"
             >
@@ -164,14 +163,22 @@ export default function Signup() {
               </svg>
               Google
             </Button>
-            <Button
-              onClick={handleGitHubSignup}
+            {/* <Button
+              onClick={async () => {
+                try {
+                  const response = await loginWithGitHub();
+                  if (!response.success) throw new Error(response.message);
+                  route.push("/");
+                } catch (error) {
+                  toaster(error as string);
+                }
+              }}
               variant="outline"
               className="w-full"
             >
               <Github className="w-5 h-5 mr-2" />
               GitHub
-            </Button>
+            </Button> */}
           </div>
         </div>
         <p className="mt-8 text-center text-sm text-gray-600">

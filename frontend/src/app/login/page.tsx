@@ -5,13 +5,14 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { Mail, Lock, Github } from "lucide-react";
+import { Mail, Lock,
+  //  Github 
+  } from "lucide-react";
 import { toaster } from "@/components/toast";
 import { useStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
 import { SuccessLottiePlayer } from "@/components/lottie/dotlottie";
 import { auth } from "@/lib/firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
 export default function Login() {
   const route = useRouter();
   if (auth.currentUser) route.push("/");
@@ -20,21 +21,25 @@ export default function Login() {
   const [isOtpRequested, setIsOtpRequested] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const login = useStore((state) => state.login);
+  const loginWithGoogle = useStore((state) => state.loginWithGoogle);
+  // const loginWithGitHub = useStore((state) => state.loginWithGitHub);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const response = await login(email, password);
+      if (!response.success) throw new Error(response.message);
       setLoggedIn(true);
       setTimeout(() => {
         route.push("/company");
       }, 300);
       //eslint-disable-next-line
     } catch (error: any) {
-      console.log(error);
-      toaster(error.toString());
+      toaster(error);
       return;
     }
   };
+
   const handleOtpRequest = () => {
     if (!email) {
       toaster(
@@ -49,22 +54,9 @@ export default function Login() {
     setIsOtpRequested(false);
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      await supabase.auth.signInWithOAuth({
-        provider: "google",
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleGitHubLogin = () => {
-    toaster("Please use Email/Password, this is still in development.");
-  };
   if (loggedIn) {
     return (
-      <div className="h-screen w-full bg-gradient-custom flex flex-col items-center justify-center p-4">
+      <div className="h-16 w-16 bg-gradient-custom flex flex-col items-center justify-center p-4">
         <SuccessLottiePlayer />
       </div>
     );
@@ -175,9 +167,17 @@ export default function Login() {
               </span>
             </div>
           </div>
-          <div className="mt-6 grid grid-cols-2 gap-3">
+          <div className="mt-6 flex w-full gap-3">
             <Button
-              onClick={handleGoogleLogin}
+              onClick={async () => {
+                try {
+                  const response = await loginWithGoogle();
+                  if (!response.success) throw new Error(response.message);
+                  route.push("/");
+                } catch (error) {
+                  toaster(error as string);
+                }
+              }}
               variant="outline"
               className="w-full"
             >
@@ -189,14 +189,22 @@ export default function Login() {
               </svg>
               Google
             </Button>
-            <Button
-              onClick={handleGitHubLogin}
+            {/* <Button
+              onClick={async () => {
+                try {
+                  const response = await loginWithGitHub();
+                  if (!response.success) throw new Error(response.message);
+                  route.push("/");
+                } catch (error) {
+                  toaster(error as string);
+                }
+              }}
               variant="outline"
               className="w-full"
             >
               <Github className="w-5 h-5 mr-2" />
               GitHub
-            </Button>
+            </Button> */}
           </div>
         </div>
         <p className="mt-8 text-center text-sm text-gray-600">

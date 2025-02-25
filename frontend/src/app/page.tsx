@@ -1,5 +1,4 @@
 "use client";
-import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -7,15 +6,11 @@ import { Button } from "@/components/ui/button";
 import CompanyCarousel from "./_components/carousel";
 import InterviewRoadmap from "./_components/roadmap";
 import Footer from "./_components/footer";
-import { toast } from "sonner";
 import { auth } from "@/lib/firebase";
+import { useStore } from "@/lib/store";
+import { toaster } from "@/components/toast";
 export default function Home() {
-  useEffect(() => {
-    toast(
-      "Welcome to InterviewBuddy! This piece of software is in still in continous development. Please expect bugs and issues. Thank you for your your cooperation."
-    );
-  }, []);
-  if (auth.currentUser) console.log("bruh");
+  const signout = useStore((state) => state.logout);
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <header className="py-6 px-4 sm:px-6 lg:px-8 bg-[#FFA09B] ">
@@ -34,29 +29,41 @@ export default function Home() {
               className="text-foreground hover:text-primary"
               asChild
             >
-              {!auth.currentUser ? (
-                <Link href="/login" className="text-white text-lg">
-                  Login
-                </Link>
-              ) : (
-                <Button onClick={async () => await auth.signOut()}>
-                  Signout
-                </Button>
-              )}
+              <Link href="/code" className="text-white text-lg">
+                Code
+              </Link>
             </Button>
             <Button
               variant="ghost"
               className="text-foreground hover:text-primary"
               asChild
             >
-              <Link href="/code" className="text-white text-lg">
-                Code
-              </Link>
+              {!auth.currentUser ? (
+                <Link href="/login" className="text-white text-lg">
+                  Login
+                </Link>
+              ) : (
+                <Button
+                  className="shadow-none bg-transparent text-white"
+                  onClick={async () => {
+                    try {
+                      const res = await signout();
+                      if (!res.success) {
+                        throw new Error(res.message);
+                      }
+                      window.location.reload();
+                    } catch (error) {
+                      toaster(error as string);
+                    }
+                  }}
+                >
+                  Signout
+                </Button>
+              )}
             </Button>
           </nav>
         </div>
       </header>
-
       <main className="flex-grow">
         <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-custom">
           <div className="container mx-auto max-w-7xl">
@@ -113,9 +120,7 @@ export default function Home() {
             </div>
           </div>
         </section>
-
         <CompanyCarousel />
-
         <InterviewRoadmap />
       </main>
       <Footer />
