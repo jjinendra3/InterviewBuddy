@@ -129,10 +129,9 @@ export const audioStore = create<AudioStore>()((set, get) => ({
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND}/start`,
         formData,
-        { responseType: "arraybuffer" },
+        { responseType: "blob" },
       );
-      const responseBlob = new Blob([response.data], { type: "audio/wav" });
-      await get().playAudio(responseBlob);
+      await get().playAudio(response.data);
     } catch (error) {
       set({ isLoading: false });
       console.error("Error during transcription:", error);

@@ -40,11 +40,12 @@ export const useStore = create<GeneralStore>()((set, get) => ({
     formData.append("timeLeft", "TimeLeft: 10:00");
     formData.append("text", `Hello, My name is ${get().candidate?.name}`);
     const firstAudio = await axios.post(`${BACKEND}/meet`, formData, {
-      responseType: "arraybuffer",
+      responseType: "blob",
     });
-
-    const audioBlob = new Blob([firstAudio.data], { type: "audio/wav" });
-    set({ startAudio: audioBlob });
+    const jsonResponse = firstAudio.headers["json"];
+    const parsedJson = JSON.parse(jsonResponse);
+    console.log(parsedJson);
+    set({ startAudio: firstAudio.data });
     return response.data.id;
   },
   endInterview: async () => {
