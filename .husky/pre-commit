@@ -1,1 +1,11 @@
+#!/bin/bash
+
+echo "Running code formatting on all files before commit..."
+
+echo "Formatting all JavaScript/TypeScript files..."
 bun run format
+
+git add -u
+
+echo "✅ Code formatting complete. Proceeding with commit."
+exit 0

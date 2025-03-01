@@ -3,6 +3,7 @@
     "start-frontend": "cd frontend && npm run dev",
     "start-backend": "cd backend && npm start",
     "start": "concurrently -n \"FRONTEND,BACKEND\" -c \"bgBlue,bgYellow\" -p \"[{name}]\" \"npm run start-frontend\" \"npm run start-backend\"",
+    "build-frontend": "cd frontend && npm run build",
     "install-frontend": "cd Frontend && npm i && npm run build",
     "install-backend": "cd Backend && npm i",
     "installer": "npm i && npm run install-backend && npm run install-frontend",

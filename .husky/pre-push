@@ -1,0 +1,14 @@
+#!/bin/bash
+
+echo "Running Next.js build before pushing..."
+
+bun run build-frontend
+BUILD_STATUS=$?
+
+if [ $BUILD_STATUS -ne 0 ]; then
+  echo "❌ Next.js build failed. Push aborted."
+  exit 1
+fi
+
+echo "✅ Next.js build succeeded. Proceeding with push."
+exit 0
