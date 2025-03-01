@@ -44,7 +44,7 @@ export default function Login() {
   const handleOtpRequest = () => {
     if (!email) {
       toaster(
-        "OTP feature is still in development mode, please try admin@admin.com/admin"
+        "OTP feature is still in development mode, please try admin@admin.com/admin",
       );
       return;
     }

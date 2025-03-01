@@ -133,7 +133,7 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND}/start`,
         formData,
-        { responseType: "blob" }
+        { responseType: "blob" },
       );
       await get().playAudio(response.data);
     } catch (error) {

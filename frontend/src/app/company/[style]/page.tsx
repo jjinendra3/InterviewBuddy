@@ -100,7 +100,7 @@ export default function ChooseInterviewType() {
                 throw new Error("Failed to start interview");
               }
               router.push(
-                `/company/${pathname.split("/")[2]}-${selectedType}/${response}`
+                `/company/${pathname.split("/")[2]}-${selectedType}/${response}`,
               );
               toast.success("Lets Go!🚀", {
                 id: load,

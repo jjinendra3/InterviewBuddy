@@ -86,7 +86,7 @@ export const generalStore = create<GeneralStore>()(
           const response = await createUserWithEmailAndPassword(
             auth,
             email,
-            password
+            password,
           );
           const user = await axios.post(`${BACKEND}/user`, {
             email,
@@ -110,7 +110,7 @@ export const generalStore = create<GeneralStore>()(
           const response = await signInWithEmailAndPassword(
             auth,
             email,
-            password
+            password,
           );
           const user = await axios.get(`${BACKEND}/user/${response.user.uid}`);
           if (!user) throw new Error("User not found");
@@ -195,6 +195,6 @@ export const generalStore = create<GeneralStore>()(
       partialize: (state) => ({
         candidate: state.candidate,
       }),
-    }
-  )
+    },
+  ),
 );

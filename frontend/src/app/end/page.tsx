@@ -28,7 +28,7 @@ export default function LoadingPage() {
       const response = await endMeeting();
       if (!response) {
         alert(
-          "Error generating the evaluation report. Please try again later."
+          "Error generating the evaluation report. Please try again later.",
         );
       }
     };

@@ -55,7 +55,7 @@ app.post("/", upload, async (req, res) => {
 
     res.setHeader(
       "Content-Type",
-      "multipart/form-data; boundary=" + form.getBoundary()
+      "multipart/form-data; boundary=" + form.getBoundary(),
     );
     return form.pipe(res);
   } catch (error) {
