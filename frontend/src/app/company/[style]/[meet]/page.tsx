@@ -7,23 +7,23 @@ import {
   ResizableHandle,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { useStore } from "@/lib/store";
+import { generalStore } from "@/lib/generalStore";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { toaster } from "@/components/toast";
 import { useRouter } from "next/navigation";
-import { audioStore } from "@/lib/audioStore";
+import { interviewStore } from "@/lib/interviewStore";
 gsap.registerPlugin(useGSAP);
 
 export default function Home() {
   const router = useRouter();
   const [code, setCode] = useState("// Your code here");
-  const { playAudio } = audioStore();
+  const { playAudio } = interviewStore();
   const [minutes, setMinutes] = useState(10);
   const [seconds, setSeconds] = useState(0);
-  const startAudio = useStore((state) => state.startAudio);
-  const setStartAudio = useStore((state) => state.setStartAudio);
-  const candidate = useStore((state) => state.candidate);
+  const startAudio = generalStore((state) => state.startAudio);
+  const setStartAudio = generalStore((state) => state.setStartAudio);
+  const candidate = generalStore((state) => state.candidate);
   if (!candidate) {
     console.log("Please Login to start the meet.");
   }

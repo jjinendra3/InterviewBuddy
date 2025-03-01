@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/button";
 import CompanyCarousel from "./_components/carousel";
 import InterviewRoadmap from "./_components/roadmap";
 import Footer from "./_components/footer";
-import { auth } from "@/lib/firebase";
-import { useStore } from "@/lib/store";
+import { generalStore } from "@/lib/generalStore";
 import { toaster } from "@/components/toast";
+
 export default function Home() {
-  const signout = useStore((state) => state.logout);
+  const signout = generalStore((state) => state.logout);
+  const loginWithGoogle = generalStore((state) => state.loginWithGoogle);
+  const candidate = generalStore((state) => state.candidate);
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <header className="py-6 px-4 sm:px-6 lg:px-8 bg-[#FFA09B] ">
@@ -38,10 +40,13 @@ export default function Home() {
               className="text-foreground hover:text-primary"
               asChild
             >
-              {!auth.currentUser ? (
-                <Link href="/login" className="text-white text-lg">
+              {!candidate ? (
+                <Button
+                  onClick={loginWithGoogle}
+                  className="text-white text-md bg-transparent shadow-none"
+                >
                   Login
-                </Link>
+                </Button>
               ) : (
                 <Button
                   className="shadow-none bg-transparent text-white"
@@ -91,7 +96,7 @@ export default function Home() {
                       Start Interview
                     </Button>
                   </Link>
-                  {!auth.currentUser && (
+                  {!candidate && (
                     <Link href="/signup">
                       <Button
                         variant="outline"

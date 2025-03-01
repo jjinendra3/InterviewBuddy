@@ -1,6 +1,6 @@
 import axios from "axios";
 import { create } from "zustand";
-import { AudioStore } from "./types";
+import { InterviewStore } from "./types";
 
 const VOICE_MIN_DECIBELS = -60;
 const DELAY_BETWEEN_DIALOGS = 3000;
@@ -8,10 +8,14 @@ const DIALOG_MAX_LENGTH = 60000;
 //eslint-disable-next-line
 let MEDIA_RECORDER: any = null;
 
-export const audioStore = create<AudioStore>()((set, get) => ({
+export const interviewStore = create<InterviewStore>()((set, get) => ({
   isRecording: false,
   aiSpeaking: false,
   isLoading: false,
+  seconds: null,
+  minutes: null,
+  setSeconds: (seconds) => set({ seconds }),
+  setMinutes: (minutes) => set({ minutes }),
   setIsLoading: (loading) => set({ isLoading: loading }),
   setAiSpeaking: (speaking) => set({ aiSpeaking: speaking }),
   setIsRecording: (recording) => set({ isRecording: recording }),
@@ -112,7 +116,7 @@ export const audioStore = create<AudioStore>()((set, get) => ({
     }
   },
   sendAudio: async (audioBlob: Blob) => {
-    const interviewId = await localStorage.getItem("interviewId");
+    const interviewId = await localStorage.getItem("interviewId ");
     const seconds = await localStorage.getItem("seconds");
     const minutes = await localStorage.getItem("minutes");
     if (!audioBlob || !interviewId) {
@@ -129,7 +133,7 @@ export const audioStore = create<AudioStore>()((set, get) => ({
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND}/start`,
         formData,
-        { responseType: "blob" },
+        { responseType: "blob" }
       );
       await get().playAudio(response.data);
     } catch (error) {

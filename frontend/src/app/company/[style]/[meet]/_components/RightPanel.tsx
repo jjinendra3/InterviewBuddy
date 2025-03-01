@@ -9,7 +9,7 @@ import {
   UserLottiePlayer,
 } from "@/components/lottie/dotlottie";
 import { Square, Mic } from "lucide-react";
-import { audioStore } from "@/lib/audioStore";
+import { interviewStore } from "@/lib/interviewStore";
 export default function RightPanel({
   minutes,
   seconds,
@@ -22,7 +22,7 @@ export default function RightPanel({
   setSeconds: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const { isLoading, isRecording, aiSpeaking, startRecording, stopRecording } =
-    audioStore();
+    interviewStore();
   return (
     <ResizablePanel
       defaultSize={25}

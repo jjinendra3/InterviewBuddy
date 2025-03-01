@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Mail, Lock, User } from "lucide-react";
 import { toaster } from "@/components/toast";
-import { useStore } from "@/lib/store";
+import { generalStore } from "@/lib/generalStore";
 import { useRouter } from "next/navigation";
 import { SuccessLottiePlayer } from "@/components/lottie/dotlottie";
 import { auth } from "@/lib/firebase";
@@ -19,7 +19,7 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [signed, setSigned] = useState<boolean>(false);
-  const signUp = useStore((state) => state.signup);
+  const signUp = generalStore((state) => state.signup);
   const handleSignup = async () => {
     try {
       const response = await signUp(email, name, password);

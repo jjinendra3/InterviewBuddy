@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { UserCircle, Code } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
-import { useStore } from "@/lib/store";
+import { generalStore } from "@/lib/generalStore";
 import { toast } from "sonner";
 
 const interviewTypes = [
@@ -28,7 +28,8 @@ export default function ChooseInterviewType() {
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const router = useRouter();
   const pathname = usePathname();
-  const introduction = useStore((state) => state.startInterview);
+  const introduction = generalStore((state) => state.startInterview);
+  const candidate = generalStore((state) => state.candidate);
   if (
     !(
       pathname.split("/")[2] == "meta" ||
@@ -87,14 +88,29 @@ export default function ChooseInterviewType() {
           className="bg-primary text-primary-foreground hover:bg-primary/90"
           disabled={!selectedType}
           onClick={async () => {
+            console.log(candidate);
+            if (!candidate) {
+              router.push("/login");
+              return;
+            }
             const load = toast.loading("Loading Interview...");
-            const response = await introduction();
-            router.push(
-              `/company/${pathname.split("/")[2]}-${selectedType}/${response}`,
-            );
-            toast.success("Lets Go!🚀", {
-              id: load,
-            });
+            try {
+              const response = await introduction();
+              if (!response) {
+                throw new Error("Failed to start interview");
+              }
+              router.push(
+                `/company/${pathname.split("/")[2]}-${selectedType}/${response}`
+              );
+              toast.success("Lets Go!🚀", {
+                id: load,
+              });
+            } catch {
+              toast.error("Failed to start interview", {
+                id: load,
+              });
+              router.push("/");
+            }
           }}
         >
           Start Interview

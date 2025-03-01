@@ -1,25 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Mail, Lock } from "lucide-react";
 import { toaster } from "@/components/toast";
-import { useStore } from "@/lib/store";
+import { generalStore } from "@/lib/generalStore";
 import { useRouter } from "next/navigation";
 import { SuccessLottiePlayer } from "@/components/lottie/dotlottie";
-import { auth } from "@/lib/firebase";
 import LoginWithGoogle from "@/components/loginWithGoogle";
 export default function Login() {
   const route = useRouter();
-  if (auth.currentUser) route.push("/");
+  const candidate = generalStore((state) => state.candidate);
+  useEffect(() => {
+    if (candidate) {
+      route.push("/company");
+    }
+  }, [candidate, route]);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isOtpRequested, setIsOtpRequested] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
-  const login = useStore((state) => state.login);
+  const login = generalStore((state) => state.login);
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -39,7 +44,7 @@ export default function Login() {
   const handleOtpRequest = () => {
     if (!email) {
       toaster(
-        "OTP feature is still in development mode, please try admin@admin.com/admin",
+        "OTP feature is still in development mode, please try admin@admin.com/admin"
       );
       return;
     }

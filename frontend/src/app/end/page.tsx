@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useStore } from "@/lib/store";
+import { generalStore } from "@/lib/generalStore";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 const quotes = [
@@ -15,7 +15,7 @@ const quotes = [
 gsap.registerPlugin(useGSAP);
 export default function LoadingPage() {
   const [currentQuote, setCurrentQuote] = useState(0);
-  const endMeeting = useStore((state) => state.endInterview);
+  const endMeeting = generalStore((state) => state.endInterview);
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentQuote((prev) => (prev + 1) % quotes.length);
@@ -28,7 +28,7 @@ export default function LoadingPage() {
       const response = await endMeeting();
       if (!response) {
         alert(
-          "Error generating the evaluation report. Please try again later.",
+          "Error generating the evaluation report. Please try again later."
         );
       }
     };

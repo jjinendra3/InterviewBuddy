@@ -4,10 +4,11 @@ const app = Router();
 const dotenv = require("dotenv");
 dotenv.config();
 
-app.post("/signup", async (req, res) => {
+app.post("/", async (req, res) => {
   try {
     const { uid, name, email } = req.body;
-    const userExists = await prisma.user.findUnique({
+    //  TODO: MAKE EMAIL UNIQUE
+    const userExists = await prisma.user.findFirst({
       where: { email: email },
     });
     if (userExists) {
@@ -28,6 +29,7 @@ app.post("/signup", async (req, res) => {
       user: { uid: newUser.uid, email: newUser.email, name: newUser.name },
     });
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ error: "Internal server error" });
   }
 });

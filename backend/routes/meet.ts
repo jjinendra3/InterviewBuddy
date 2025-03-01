@@ -27,10 +27,8 @@ const upload = multer({ storage }).fields([
 
 app.post("/", upload, async (req, res) => {
   try {
-    const interviewId = req.body.interviewId;
-    const timeLeft = req.body.timeLeft ?? "";
-    const text = req.body.text;
-    const round = req.body.round;
+    //  todo: fix this when meet gets started
+    const { interviewId, timeLeft, text, round } = req.body;
     const history = await getChatHistory(interviewId);
     const textGen: AI = round.includes("tech")
       ? await useDsaAi(round, text, timeLeft, history)
@@ -57,7 +55,7 @@ app.post("/", upload, async (req, res) => {
 
     res.setHeader(
       "Content-Type",
-      "multipart/form-data; boundary=" + form.getBoundary(),
+      "multipart/form-data; boundary=" + form.getBoundary()
     );
     return form.pipe(res);
   } catch (error) {

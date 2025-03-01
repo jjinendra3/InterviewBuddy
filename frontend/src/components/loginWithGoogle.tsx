@@ -1,11 +1,11 @@
 "use client";
 import React from "react";
 import { Button } from "./ui/button";
-import { useStore } from "@/lib/store";
+import { generalStore } from "@/lib/generalStore";
 import { useRouter } from "next/navigation";
 import { toaster } from "./toast";
 function LoginWithGoogle() {
-  const loginWithGoogle = useStore((state) => state.loginWithGoogle);
+  const loginWithGoogle = generalStore((state) => state.loginWithGoogle);
   const route = useRouter();
   return (
     <div className="mt-6">
