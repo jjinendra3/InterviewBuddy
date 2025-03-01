@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { generalStore } from "@/lib/generalStore";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { interviewStore } from "@/lib/interviewStore";
 const quotes = [
   "The only way to do great work is to love what you do. - Steve Jobs",
   "Success is not final, failure is not fatal: it is the courage to continue that counts. - Winston Churchill",
@@ -15,7 +15,7 @@ const quotes = [
 gsap.registerPlugin(useGSAP);
 export default function LoadingPage() {
   const [currentQuote, setCurrentQuote] = useState(0);
-  const endMeeting = generalStore((state) => state.endInterview);
+  const endMeeting = interviewStore((state) => state.endInterview);
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentQuote((prev) => (prev + 1) % quotes.length);

@@ -1,3 +1,4 @@
+import { CoreMessage } from "ai";
 import prisma from "./prisma";
 
 export const createInterview = async (round: string, candidateId: string) => {
@@ -29,7 +30,9 @@ export const saveToDbModel = async (text: string, interviewId: string) => {
   });
 };
 
-export const getChatHistory = async (interviewId: string) => {
+export const getChatHistory = async (
+  interviewId: string,
+): Promise<CoreMessage[]> => {
   try {
     const response = await prisma.conversation.findMany({
       where: {
@@ -39,12 +42,12 @@ export const getChatHistory = async (interviewId: string) => {
         createdAt: "asc",
       },
     });
-    const history = response.map((item) => {
+    const history: CoreMessage[] = response.map((item) => {
       return {
         role: item.role,
-        parts: [{ text: item.text }],
+        text: item.text,
       };
-    });
+    }) as CoreMessage[];
 
     return history;
   } catch (error) {

@@ -8,6 +8,7 @@ import { UserCircle, Code } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import { generalStore } from "@/lib/generalStore";
 import { toast } from "sonner";
+import { interviewStore } from "@/lib/interviewStore";
 
 const interviewTypes = [
   {
@@ -28,7 +29,7 @@ export default function ChooseInterviewType() {
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const router = useRouter();
   const pathname = usePathname();
-  const introduction = generalStore((state) => state.startInterview);
+  const introduction = interviewStore((state) => state.startInterview);
   const candidate = generalStore((state) => state.candidate);
   if (
     !(
@@ -95,13 +96,12 @@ export default function ChooseInterviewType() {
             }
             const load = toast.loading("Loading Interview...");
             try {
-              const response = await introduction();
+              const roundParam = `${pathname.split("/")[2]}-${selectedType}`;
+              const response = await introduction(roundParam);
               if (!response) {
                 throw new Error("Failed to start interview");
               }
-              router.push(
-                `/company/${pathname.split("/")[2]}-${selectedType}/${response}`,
-              );
+              router.push(`/company/${roundParam}/${response}`);
               toast.success("Lets Go!🚀", {
                 id: load,
               });

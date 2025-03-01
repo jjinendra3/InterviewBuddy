@@ -21,14 +21,23 @@ export default function RightPanel({
   setMinutes: React.Dispatch<React.SetStateAction<number>>;
   setSeconds: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const { isLoading, isRecording, aiSpeaking, startRecording, stopRecording } =
-    interviewStore();
+  const {
+    isLoading,
+    isRecording,
+    aiSpeaking,
+    startRecording,
+    stopRecording,
+    endInterview,
+  } = interviewStore();
   return (
     <ResizablePanel
       defaultSize={25}
       className="flex flex-col h-full bg-white/80 p-4 rounded-lg shadow-lg m-2 backdrop-blur-sm"
     >
-      <Button className="bg-red-500 flex justify-center items-center font-mono font-bold text-white text-xl">
+      <Button
+        className="bg-red-500 flex justify-center items-center font-mono font-bold text-white text-xl"
+        onClick={endInterview}
+      >
         End Meeting
       </Button>
       <CountdownTimer

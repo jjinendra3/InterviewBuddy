@@ -13,12 +13,10 @@ export interface GeneralStore {
   round: string | null;
   startAudio: Blob | null;
 
+  setRound: (round: string) => void;
   setStartAudio: (audio: Blob | null) => void;
-  setInterviewId: (id: string) => void;
+  setInterviewId: (id: string | null) => void;
   setCandidate: (id: string, name: string, email: string) => void;
-
-  startInterview: () => Promise<string>;
-  endInterview: () => Promise<boolean>;
 
   signup: (email: string, name: string, password: string) => Promise<Auth>;
   login: (email: string, password: string) => Promise<Auth>;
@@ -35,6 +33,8 @@ export interface InterviewStore {
   isLoading: boolean;
   seconds: number | null;
   minutes: number | null;
+  startInterview: (round: string) => Promise<string>;
+  endInterview: () => Promise<boolean>;
   setSeconds: (seconds: number | null) => void;
   setMinutes: (minutes: number | null) => void;
   setIsLoading: (loading: boolean) => void;

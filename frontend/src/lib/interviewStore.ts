@@ -1,12 +1,15 @@
 import axios from "axios";
 import { create } from "zustand";
 import { InterviewStore } from "./types";
+import { generalStore } from "./generalStore";
+import { convertBase64ToAudioWithPackage } from "./base64toBlob";
 
 const VOICE_MIN_DECIBELS = -60;
 const DELAY_BETWEEN_DIALOGS = 3000;
 const DIALOG_MAX_LENGTH = 60000;
 //eslint-disable-next-line
 let MEDIA_RECORDER: any = null;
+const BACKEND = process.env.NEXT_PUBLIC_BACKEND;
 
 export const interviewStore = create<InterviewStore>()((set, get) => ({
   isRecording: false,
@@ -14,6 +17,7 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
   isLoading: false,
   seconds: null,
   minutes: null,
+  dsaQuestion: null,
   setSeconds: (seconds) => set({ seconds }),
   setMinutes: (minutes) => set({ minutes }),
   setIsLoading: (loading) => set({ isLoading: loading }),
@@ -24,6 +28,59 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
     await audio.play().catch((error) => {
       console.error("Error playing audio:", error);
     });
+  },
+  startInterview: async (round: string) => {
+    try {
+      if (!generalStore.getState().candidate?.id)
+        throw new Error("User not found");
+      const response = await axios.post(`${BACKEND}/start`, {
+        round: round,
+        userId: generalStore.getState().candidate?.id,
+      });
+      if (response.status === 500) throw new Error("Candidate not found");
+      generalStore.getState().setInterviewId(response.data.id);
+      generalStore.getState().setRound("google-hr");
+      const formData = new FormData();
+      formData.append("interviewId", response.data.id);
+      formData.append("timeLeft", "TimeLeft: 10:00");
+      formData.append(
+        "text",
+        `Hello, My name is ${generalStore.getState().candidate?.name}`,
+      );
+      formData.append("round", round);
+      const firstAudio = await axios.post(`${BACKEND}/meet`, formData);
+      const audioBlob = convertBase64ToAudioWithPackage(firstAudio.data.audio);
+      generalStore.getState().setStartAudio(audioBlob);
+      return response.data.id;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+  endInterview: async () => {
+    try {
+      if (!generalStore.getState().candidate) return false;
+      const interviewId = generalStore.getState().interviewId;
+      if (!interviewId) return false;
+      generalStore.getState().setInterviewId(null);
+      const response = await axios.get(`${BACKEND}/end/${interviewId}`, {
+        responseType: "blob",
+      });
+      if (response.status === 500) return false;
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.setAttribute("download", "EvaluationReport.pdf");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
+      return true;
+    } catch (error) {
+      console.error("PDF download error:", error);
+      return false;
+    }
   },
   startRecording: async () => {
     set({ isRecording: true });
@@ -127,18 +184,16 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
     formData.append("audio", audioBlob, "recording.webm");
     formData.append("interviewId", interviewId);
     formData.append("timeLeft", `TimeLeft: ${minutes}:${seconds}`);
-    set({ isLoading: false });
+    set({ isLoading: true });
 
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND}/start`,
-        formData,
-        { responseType: "blob" },
-      );
-      await get().playAudio(response.data);
+      const firstAudio = await axios.post(`${BACKEND}/meet`, formData);
+      const audioBlob = convertBase64ToAudioWithPackage(firstAudio.data.audio);
+      get().playAudio(audioBlob);
     } catch (error) {
-      set({ isLoading: false });
       console.error("Error during transcription:", error);
+    } finally {
+      set({ isLoading: false });
     }
   },
   endRecording: async () => {

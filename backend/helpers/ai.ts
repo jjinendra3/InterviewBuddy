@@ -1,6 +1,6 @@
 import { interviewRound } from "./interviewRound";
 import { GEMINI_1_5_FLASH } from "../ai";
-import { generateObject, type CoreUserMessage } from "ai";
+import { CoreMessage, generateObject } from "ai";
 import { z } from "zod";
 import { AI } from "../type/types";
 const fs = require("fs");
@@ -19,14 +19,19 @@ const DsaSchema = z.object({
 export const useAi = async (
   round: string,
   text: string,
-  history: CoreUserMessage[],
+  history: CoreMessage[],
   timeLeft?: string,
 ): Promise<AI> => {
   try {
-    const audioInput: CoreUserMessage = {
+    const audioInput: CoreMessage = {
       role: "user",
       content: text
-        ? text
+        ? [
+            {
+              type: "text",
+              text: text,
+            },
+          ]
         : [
             {
               type: "text",
@@ -56,12 +61,12 @@ export const useAi = async (
 export const useDsaAi = async (
   round: string,
   text: string,
-  history: CoreUserMessage[],
+  history: CoreMessage[],
   timeLeft?: string,
   code?: string,
 ) => {
   try {
-    const audioInput: CoreUserMessage = {
+    const audioInput: CoreMessage = {
       role: "user",
       content: text
         ? text

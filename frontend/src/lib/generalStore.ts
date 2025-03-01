@@ -29,58 +29,7 @@ export const generalStore = create<GeneralStore>()(
           candidate: { id: id, name: name, email: email },
         }),
       round: null,
-      startInterview: async () => {
-        try {
-          if (!auth.currentUser && !get().candidate?.id)
-            throw new Error("User not found");
-          console.log(get().candidate?.id);
-          const response = await axios.post(`${BACKEND}/start`, {
-            round: "google-hr",
-            userId: get().candidate?.id,
-          });
-          if (response.status === 500) throw new Error("Candidate not found");
-          set({ interviewId: response.data.id, round: response.data.round });
-          const formData = new FormData();
-          formData.append("interviewId", response.data.id);
-          formData.append("timeLeft", "TimeLeft: 10:00");
-          formData.append("text", `Hello, My name is ${get().candidate?.name}`);
-          const firstAudio = await axios.post(`${BACKEND}/meet`, formData, {
-            responseType: "blob",
-          });
-          const jsonResponse = firstAudio.headers["json"];
-          console.log(JSON.parse(jsonResponse));
-          set({ startAudio: firstAudio.data });
-          return response.data.id;
-        } catch (error) {
-          console.error(error);
-          return null;
-        }
-      },
-      endInterview: async () => {
-        try {
-          if (!auth.currentUser) return false;
-          const interviewId = get().interviewId;
-          if (!interviewId) return false;
-          set({ interviewId: null });
-          const response = await axios.get(`${BACKEND}/end/${interviewId}`, {
-            responseType: "blob",
-          });
-          if (response.status === 500) return false;
-          const blob = new Blob([response.data], { type: "application/pdf" });
-          const downloadUrl = window.URL.createObjectURL(blob);
-          const link = document.createElement("a");
-          link.href = downloadUrl;
-          link.setAttribute("download", "EvaluationReport.pdf");
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          window.URL.revokeObjectURL(downloadUrl);
-          return true;
-        } catch (error) {
-          console.error("PDF download error:", error);
-          return false;
-        }
-      },
+      setRound: (round) => set({ round }),
       signup: async (email, name, password) => {
         try {
           const response = await createUserWithEmailAndPassword(

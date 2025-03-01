@@ -43,7 +43,7 @@ export default function Home() {
               {!candidate ? (
                 <Button
                   onClick={loginWithGoogle}
-                  className="text-white text-md bg-transparent shadow-none"
+                  className="text-white text-sm bg-transparent shadow-none"
                 >
                   Login
                 </Button>

@@ -3,7 +3,6 @@ import { getAudio } from "../helpers/speech";
 const path = require("path");
 const fs = require("fs");
 const multer = require("multer");
-const formData = require("form-data");
 import { useAi, useDsaAi } from "../helpers/ai";
 import { saveToDbModel, saveToDbUser, getChatHistory } from "../db/saveToDb";
 import { AI } from "../type/types";
@@ -27,37 +26,23 @@ const upload = multer({ storage }).fields([
 
 app.post("/", upload, async (req, res) => {
   try {
-    //  todo: fix this when meet gets started
     const { interviewId, timeLeft, text, round } = req.body;
     const history = await getChatHistory(interviewId);
-    const textGen: AI = round.includes("tech")
-      ? await useDsaAi(round, text, timeLeft, history)
-      : await useAi(round, text, timeLeft, history);
+    const textGen: AI = await useAi(round, text, history, timeLeft);
     await getAudio(textGen.reply);
     const outputAudio = path.join(__dirname, "../output.wav");
     if (!fs.existsSync(outputAudio)) throw "Not Found!";
     await saveToDbUser(textGen.speechToText, interviewId);
     await saveToDbModel(textGen.reply, interviewId);
 
-    const form = new formData();
-
     const audioBuffer = fs.readFileSync(outputAudio);
-    const audioBlob = new Blob([audioBuffer], { type: "audio/wav" });
-
-    form.append("audio", audioBlob);
-
-    const jsonResponse = {
+    const audioBase64 = audioBuffer.toString("base64");
+    return res.json({
+      audio: `data:audio/wav;base64,${audioBase64}`,
       dsaQuestion: textGen.dsaQuestion,
       codeHelp: textGen.codeHelp,
       reply: textGen.reply,
-    };
-    form.append("json", JSON.stringify(jsonResponse));
-
-    res.setHeader(
-      "Content-Type",
-      "multipart/form-data; boundary=" + form.getBoundary(),
-    );
-    return form.pipe(res);
+    });
   } catch (error) {
     console.log(error);
     return res
