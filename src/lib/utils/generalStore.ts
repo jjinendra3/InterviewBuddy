@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { type GeneralStore } from "./types";
-import axios from "axios";
+import type { GeneralStore } from "./types";
 import { auth } from "./firebase";
 import {
   createUserWithEmailAndPassword,
@@ -14,7 +13,6 @@ import {
   GithubAuthProvider,
 } from "firebase/auth";
 import { toaster } from "@/components/toast";
-const BACKEND = process.env.NEXT_PUBLIC_BACKEND;
 
 export const generalStore = create<GeneralStore>()(
   persist(
@@ -35,18 +33,27 @@ export const generalStore = create<GeneralStore>()(
           const response = await createUserWithEmailAndPassword(
             auth,
             email,
-            password,
+            password
           );
-          const user = await axios.post(`${BACKEND}/user`, {
-            email,
-            name,
-            uid: response.user.uid,
+          const user = await fetch("/api/user", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email,
+              name,
+              uid: response.user.uid,
+            }),
           });
+
+          const data = await user.json();
+          if (!user.ok) throw new Error("User not found");
           set({
             candidate: {
-              id: user.data.uid,
-              name: user.data.name,
-              email: user.data.email,
+              id: data.uid,
+              name: data.name,
+              email: data.email,
             },
           });
           return { message: "User SignUp Successful!", success: true };
@@ -59,15 +66,27 @@ export const generalStore = create<GeneralStore>()(
           const response = await signInWithEmailAndPassword(
             auth,
             email,
-            password,
+            password
           );
-          const user = await axios.get(`${BACKEND}/user/${response.user.uid}`);
-          if (!user) throw new Error("User not found");
+          const user = await fetch("/api/user", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email,
+              name,
+              uid: response.user.uid,
+            }),
+          });
+
+          const data = await user.json();
+          if (!user.ok) throw new Error("User not found");
           set({
             candidate: {
-              id: user.data.uid,
-              name: user.data.name,
-              email: user.data.email,
+              id: data.uid,
+              name: data.name,
+              email: data.email,
             },
           });
           return { message: "User Login Successful!", success: true };
@@ -82,24 +101,30 @@ export const generalStore = create<GeneralStore>()(
           const authUser = result.user;
           if (!authUser)
             return { message: "User not found through Google", success: false };
-          const userExists = await axios.post(`${BACKEND}/user`, {
-            email: authUser?.email,
-            name: authUser?.displayName,
-            uid: authUser?.uid,
+          const user = await fetch("/api/user", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: authUser?.email,
+              name: authUser?.displayName,
+              uid: authUser?.uid,
+            }),
           });
-          const { user } = userExists.data;
-          if (!userExists) {
+
+          const data = await user.json();
+          if (!user.ok) {
             await get().logout();
             throw new Error("User not found");
           }
           set({
             candidate: {
-              id: user.uid,
-              name: user.name,
-              email: user.email,
+              id: data.uid,
+              name: data.name,
+              email: data.email,
             },
           });
-          console.log(get().candidate);
           return { message: "User Login Successful!", success: true };
         } catch (error) {
           console.log("briihhh");
@@ -144,6 +169,6 @@ export const generalStore = create<GeneralStore>()(
       partialize: (state) => ({
         candidate: state.candidate,
       }),
-    },
-  ),
+    }
+  )
 );

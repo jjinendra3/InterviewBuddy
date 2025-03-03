@@ -1,6 +1,5 @@
-import axios from "axios";
 import { create } from "zustand";
-import { InterviewStore } from "./types";
+import type { InterviewStore } from "./types";
 import { generalStore } from "./generalStore";
 import { convertBase64ToAudioWithPackage } from "./base64toBlob";
 
@@ -9,7 +8,6 @@ const DELAY_BETWEEN_DIALOGS = 3000;
 const DIALOG_MAX_LENGTH = 60000;
 //eslint-disable-next-line
 let MEDIA_RECORDER: any = null;
-const BACKEND = process.env.NEXT_PUBLIC_BACKEND;
 
 export const interviewStore = create<InterviewStore>()((set, get) => ({
   isRecording: false,
@@ -33,25 +31,38 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
     try {
       if (!generalStore.getState().candidate?.id)
         throw new Error("User not found");
-      const response = await axios.post(`${BACKEND}/start`, {
-        round: round,
-        userId: generalStore.getState().candidate?.id,
+
+      const response = await fetch("/api/start-interview", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          round: round,
+          userId: generalStore.getState().candidate?.id,
+        }),
       });
-      if (response.status === 500) throw new Error("Candidate not found");
-      generalStore.getState().setInterviewId(response.data.id);
+      const res = await response.json();
+      if (res.status === 500) throw new Error("Candidate not found");
+      generalStore.getState().setInterviewId(res.data.id);
+      generalStore.getState().setRound("google-hr");
       generalStore.getState().setRound("google-hr");
       const formData = new FormData();
-      formData.append("interviewId", response.data.id);
+      formData.append("interviewId", res.data.id);
       formData.append("timeLeft", "TimeLeft: 10:00");
       formData.append(
         "text",
-        `Hello, My name is ${generalStore.getState().candidate?.name}`,
+        `Hello, My name is ${generalStore.getState().candidate?.name}`
       );
       formData.append("round", round);
-      const firstAudio = await axios.post(`${BACKEND}/meet`, formData);
-      const audioBlob = convertBase64ToAudioWithPackage(firstAudio.data.audio);
+      const firstAudio = await fetch("/api/interview", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await firstAudio.json();
+      const audioBlob = convertBase64ToAudioWithPackage(data.audio);
       generalStore.getState().setStartAudio(audioBlob);
-      return response.data.id;
+      return data.id;
     } catch (error) {
       console.error(error);
       return null;
@@ -63,12 +74,15 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
       const interviewId = generalStore.getState().interviewId;
       if (!interviewId) return false;
       generalStore.getState().setInterviewId(null);
-      const response = await axios.get(`${BACKEND}/end/${interviewId}`, {
-        responseType: "blob",
+      const response = await fetch(`/api/end/${interviewId}`, {
+        method: "GET",
       });
+      const data = await response.json();
+      if (data.status === 500) return false;
+
       if (response.status === 500) return false;
-      const blob = new Blob([response.data], { type: "application/pdf" });
-      const downloadUrl = window.URL.createObjectURL(blob);
+      const pdfBlob = await convertBase64ToAudioWithPackage(data.pdf);
+      const downloadUrl = window.URL.createObjectURL(pdfBlob);
       const link = document.createElement("a");
       link.href = downloadUrl;
       link.setAttribute("download", "EvaluationReport.pdf");
@@ -187,8 +201,12 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
     set({ isLoading: true });
 
     try {
-      const firstAudio = await axios.post(`${BACKEND}/meet`, formData);
-      const audioBlob = convertBase64ToAudioWithPackage(firstAudio.data.audio);
+      const firstAudio = await fetch("/api/interview", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await firstAudio.json();
+      const audioBlob = convertBase64ToAudioWithPackage(data.audio);
       get().playAudio(audioBlob);
     } catch (error) {
       console.error("Error during transcription:", error);

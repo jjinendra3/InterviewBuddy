@@ -7,7 +7,7 @@ interface Auth {
   message: string;
   success: boolean;
 }
-export interface GeneralStore {
+export type GeneralStore = {
   interviewId: string | null;
   candidate: Candidate | null;
   round: string | null;
@@ -25,9 +25,9 @@ export interface GeneralStore {
   loginWithGitHub: () => Promise<Auth>;
 
   rehydrateState?: () => void;
-}
+};
 
-export interface InterviewStore {
+export type InterviewStore = {
   isRecording: boolean;
   aiSpeaking: boolean;
   isLoading: boolean;
@@ -47,4 +47,4 @@ export interface InterviewStore {
   playAudio: (audioBlob: Blob) => void;
   sendAudio: (audioBlob: Blob) => void;
   endRecording: () => void;
-}
+};
