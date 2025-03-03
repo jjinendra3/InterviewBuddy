@@ -16,7 +16,7 @@ import {
 import Link from "next/link";
 import { Upload, Loader2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
-import { countryList } from "@/lib/constants";
+import { countryList } from "@/lib/utils/constants";
 import { toaster } from "@/components/toast";
 
 export default function ResumeReviewPage() {

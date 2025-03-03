@@ -1,6 +1,6 @@
 import { generateObject } from "ai";
 import { z } from "zod";
-import { GEMINI_1_5_FLASH } from "@/lib/ai";
+import { GEMINI_1_5_FLASH } from "@/lib/utils/ai";
 
 const schema = z.object({
   rating: z.number().int().min(0).max(100),

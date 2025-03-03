@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { UserCircle, Code } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
-import { generalStore } from "@/lib/generalStore";
+import { generalStore } from "@/lib/utils/generalStore";
 import { toast } from "sonner";
-import { interviewStore } from "@/lib/interviewStore";
+import { interviewStore } from "@/lib/utils/interviewStore";
 
 const interviewTypes = [
   {

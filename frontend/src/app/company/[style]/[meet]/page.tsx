@@ -7,12 +7,12 @@ import {
   ResizableHandle,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { generalStore } from "@/lib/generalStore";
+import { generalStore } from "@/lib/utils/generalStore";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { toaster } from "@/components/toast";
 import { useRouter } from "next/navigation";
-import { interviewStore } from "@/lib/interviewStore";
+import { interviewStore } from "@/lib/utils/interviewStore";
 gsap.registerPlugin(useGSAP);
 
 export default function Home() {

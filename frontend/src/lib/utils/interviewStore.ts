@@ -18,11 +18,11 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
   seconds: null,
   minutes: null,
   dsaQuestion: null,
-  setSeconds: (seconds) => set({ seconds }),
-  setMinutes: (minutes) => set({ minutes }),
-  setIsLoading: (loading) => set({ isLoading: loading }),
-  setAiSpeaking: (speaking) => set({ aiSpeaking: speaking }),
-  setIsRecording: (recording) => set({ isRecording: recording }),
+  setSeconds: (seconds: number | null) => set({ seconds }),
+  setMinutes: (minutes: number | null) => set({ minutes }),
+  setIsLoading: (loading: boolean) => set({ isLoading: loading }),
+  setAiSpeaking: (speaking: boolean) => set({ aiSpeaking: speaking }),
+  setIsRecording: (recording: boolean) => set({ isRecording: recording }),
   playPing: async () => {
     const audio = new Audio("/sound/ping.mp3");
     await audio.play().catch((error) => {

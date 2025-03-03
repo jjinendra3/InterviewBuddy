@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Button } from "./ui/button";
-import { generalStore } from "@/lib/generalStore";
+import { generalStore } from "@/lib/utils/generalStore";
 import { useRouter } from "next/navigation";
 import { toaster } from "./toast";
 function LoginWithGoogle() {

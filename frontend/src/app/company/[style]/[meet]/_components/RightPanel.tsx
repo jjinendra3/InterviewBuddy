@@ -9,7 +9,7 @@ import {
   UserLottiePlayer,
 } from "@/components/lottie/dotlottie";
 import { Square, Mic } from "lucide-react";
-import { interviewStore } from "@/lib/interviewStore";
+import { interviewStore } from "@/lib/utils/interviewStore";
 export default function RightPanel({
   minutes,
   seconds,

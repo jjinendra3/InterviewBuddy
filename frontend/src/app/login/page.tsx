@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Mail, Lock } from "lucide-react";
 import { toaster } from "@/components/toast";
-import { generalStore } from "@/lib/generalStore";
+import { generalStore } from "@/lib/utils/generalStore";
 import { useRouter } from "next/navigation";
 import { SuccessLottiePlayer } from "@/components/lottie/dotlottie";
 import LoginWithGoogle from "@/components/loginWithGoogle";

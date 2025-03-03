@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import CompanyCarousel from "./_components/carousel";
 import InterviewRoadmap from "./_components/roadmap";
 import Footer from "./_components/footer";
-import { generalStore } from "@/lib/generalStore";
+import { generalStore } from "@/lib/utils/generalStore";
 import { toaster } from "@/components/toast";
 
 export default function Home() {
