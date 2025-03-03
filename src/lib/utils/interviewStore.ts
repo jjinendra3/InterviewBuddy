@@ -75,7 +75,13 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
       if (!interviewId) return false;
       generalStore.getState().setInterviewId(null);
       const response = await fetch(`/api/end/${interviewId}`, {
-        method: "GET",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          interviewId: interviewId,
+        }),
       });
       const data = await response.json();
       if (data.status === 500) return false;
