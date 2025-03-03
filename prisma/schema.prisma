@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("NEXT_PUBLIC_DATABASE_URL")
+}
+
+model Conversation {
+  id          String    @id @default(cuid())
+  interviewId String
+  role        String
+  text        String
+  createdAt   DateTime  @default(now())
+  Interview   Interview @relation(fields: [interviewId], references: [id])
+}
+
+model Interview {
+  id           String         @id @default(cuid())
+  candidateId  String
+  round        String
+  createdAt    DateTime       @default(now())
+  evaluation   String         @default("Pending")
+  feedback     String?
+  rating       Int?
+  Conversation Conversation[]
+  User         User           @relation(fields: [candidateId], references: [uid])
+}
+
+model User {
+  email     String
+  name      String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @default(now())
+  uid       String      @id
+  Interview Interview[]
+}
+
+model Prompts {
+  name   String @id
+  prompt String
+}
