@@ -3,9 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import CompanyCarousel from "./_components/carousel";
-import InterviewRoadmap from "./_components/roadmap";
-import Footer from "./_components/footer";
+import CompanyCarousel from "@/components/heroPage/carousel";
+import InterviewRoadmap from "@/components/heroPage/roadmap";
+import Footer from "@/components/heroPage/footer";
 import { generalStore } from "@/lib/utils/generalStore";
 import { toaster } from "@/components/toast";
 
