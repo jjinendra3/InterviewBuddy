@@ -22,7 +22,7 @@ export async function POST(req: Request) {
             name: userExists.name,
           },
         }),
-        { status: 200 },
+        { status: 200 }
       );
     }
     const newUser = await prisma.user.create({
@@ -37,7 +37,8 @@ export async function POST(req: Request) {
       user: newUser,
     };
     return new Response(JSON.stringify(response), { status: 200 });
-  } catch {
+  } catch (error) {
+    console.log(error);
     return new Response(JSON.stringify({ success: false, user: null }), {
       status: 500,
     });

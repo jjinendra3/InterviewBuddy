@@ -1,6 +1,7 @@
 import { generateObject } from "ai";
 import { z } from "zod";
 import { GEMINI_1_5_FLASH } from "@/lib/utils/ai";
+import { getPrompts } from "@/db/dbFunctions";
 
 const schema = z.object({
   rating: z.number().int().min(0).max(100),
@@ -12,14 +13,22 @@ export async function POST(req: Request) {
 
   const file = formData.get("file") as File;
   const country = formData.get("country") as string;
-  console.log("gotcha");
   if (!file || !country) {
     return new Response(JSON.stringify({ error: "Missing file or country" }), {
       status: 400,
       headers: { "Content-Type": "application/json" },
     });
   }
-  console.log("gotcha2");
+  const systemInstruction = await getPrompts("resume-review");
+  if (!systemInstruction) {
+    return new Response(
+      JSON.stringify({ error: "System instruction not found" }),
+      {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
 
   const result = await generateObject({
     model: GEMINI_1_5_FLASH,
@@ -36,7 +45,7 @@ export async function POST(req: Request) {
         ],
       },
     ],
-    system: process.env.NEXT_PUBLIC_RESUME_PROMPT,
+    system: systemInstruction,
     schema,
   });
   console.log(result.object);
