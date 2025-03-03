@@ -4,7 +4,9 @@ export async function POST(req: Request) {
   try {
     const { uid, name, email } = await req.json();
     if (!uid || !name || !email) {
-      return new Response("Not found", { status: 200 });
+      return new Response(JSON.stringify({ success: false, user: null }), {
+        status: 500,
+      });
     }
     const userId = uid as string;
     const userName = name as string;
@@ -15,14 +17,14 @@ export async function POST(req: Request) {
     if (userExists) {
       return new Response(
         JSON.stringify({
-          message: "User already exists",
+          success: true,
           user: {
             uid: userExists.uid,
             email: userExists.email,
             name: userExists.name,
           },
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
     const newUser = await prisma.user.create({

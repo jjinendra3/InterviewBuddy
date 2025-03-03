@@ -1,35 +1,30 @@
 import { createClient } from "@deepgram/sdk";
-import * as fs from "fs";
-
-const deepgram = createClient(process.env.NEXT_PUBLIC_DEEPGRAM_API_KEY);
+const deepgram = createClient(process.env.DEEPGRAM_API_KEY);
 
 export const getAudio = async (text: string) => {
-  const response = await deepgram.speak.request(
-    { text },
-    {
-      model: "aura-asteria-en",
-      encoding: "linear16",
-      container: "wav",
-    },
-  );
-  const stream = await response.getStream();
-  const headers = await response.getHeaders();
-  if (stream) {
-    const buffer = await getAudioBuffer(stream);
-    try {
-      fs.writeFileSync("output.wav", buffer);
-      console.log("Audio file written to output.wav");
-    } catch (err) {
-      console.error("Error writing audio to file:", err);
-    }
-  } else {
-    console.error("Error generating audio:", stream);
-  }
+  try {
+    const response = await deepgram.speak.request(
+      { text },
+      {
+        model: "aura-asteria-en",
+        encoding: "linear16",
+        container: "wav",
+      },
+    );
 
-  if (headers) {
-    console.log("Headers:", headers);
+    const stream = await response.getStream();
+    if (!stream) {
+      throw new Error("Failed to generate audio stream");
+    }
+
+    const buffer = await getAudioBuffer(stream);
+    return buffer;
+  } catch (error) {
+    console.error("Error in getAudio:", error);
+    throw error;
   }
 };
+
 //eslint-disable-next-line
 const getAudioBuffer = async (response: any) => {
   const reader = response.getReader();
@@ -38,7 +33,6 @@ const getAudioBuffer = async (response: any) => {
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;
-
     chunks.push(value);
   }
 

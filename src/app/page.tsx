@@ -31,6 +31,15 @@ export default function Home() {
               className="text-foreground hover:text-primary"
               asChild
             >
+              <Link href="/resume" className="text-white text-lg">
+                Resume Review
+              </Link>
+            </Button>
+            <Button
+              variant="ghost"
+              className="text-foreground hover:text-primary"
+              asChild
+            >
               <Link href="/code" className="text-white text-lg">
                 Code
               </Link>
@@ -42,7 +51,9 @@ export default function Home() {
             >
               {!candidate ? (
                 <Button
-                  onClick={loginWithGoogle}
+                  onClick={async () => {
+                    await loginWithGoogle();
+                  }}
                   className="text-white text-sm bg-transparent shadow-none"
                 >
                   Login

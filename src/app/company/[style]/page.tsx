@@ -31,6 +31,7 @@ export default function ChooseInterviewType() {
   const pathname = usePathname();
   const introduction = interviewStore((state) => state.startInterview);
   const candidate = generalStore((state) => state.candidate);
+  console.log(candidate);
   if (
     !(
       pathname.split("/")[2] == "meta" ||

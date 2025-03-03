@@ -2,8 +2,8 @@
 
 echo "Running code formatting on all files before commit..."
 
-echo "Formatting all JavaScript/TypeScript files..."
-bun run lint
+echo "Formatting all TypeScript files..."
+bun run format
 
 git add -u
 

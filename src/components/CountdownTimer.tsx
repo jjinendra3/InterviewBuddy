@@ -1,5 +1,6 @@
 "use client";
 
+import { interviewStore } from "@/lib/utils/interviewStore";
 import { useEffect } from "react";
 
 interface CountdownTimerProps {
@@ -15,6 +16,8 @@ export default function CountdownTimer({
   seconds,
   setSeconds,
 }: CountdownTimerProps) {
+  const seterSeconds = interviewStore((state) => state.setSeconds);
+  const seterMinutes = interviewStore((state) => state.setMinutes);
   useEffect(() => {
     const interval = setInterval(() => {
       if (seconds > 0) {
@@ -25,8 +28,8 @@ export default function CountdownTimer({
       } else {
         clearInterval(interval);
       }
-      localStorage.setItem("minutes", minutes.toString().padStart(2, "0"));
-      localStorage.setItem("seconds", seconds.toString().padStart(2, "0"));
+      seterSeconds(seconds.toString().padStart(2, "0"));
+      seterMinutes(minutes.toString().padStart(2, "0"));
     }, 1000);
 
     return () => clearInterval(interval);

@@ -19,7 +19,7 @@ export type GeneralStore = {
   setCandidate: (id: string, name: string, email: string) => void;
 
   signup: (email: string, name: string, password: string) => Promise<Auth>;
-  login: (email: string, password: string) => Promise<Auth>;
+  // login: (email: string, password: string) => Promise<Auth>;
   logout: () => Promise<Auth>;
   loginWithGoogle: () => Promise<Auth>;
   loginWithGitHub: () => Promise<Auth>;
@@ -31,12 +31,12 @@ export type InterviewStore = {
   isRecording: boolean;
   aiSpeaking: boolean;
   isLoading: boolean;
-  seconds: number | null;
-  minutes: number | null;
-  startInterview: (round: string) => Promise<string>;
+  seconds: string | null;
+  minutes: string | null;
+  startInterview: (round: string) => Promise<boolean>;
   endInterview: () => Promise<boolean>;
-  setSeconds: (seconds: number | null) => void;
-  setMinutes: (minutes: number | null) => void;
+  setSeconds: (seconds: string | null) => void;
+  setMinutes: (minutes: string | null) => void;
   setIsLoading: (loading: boolean) => void;
   setAiSpeaking: (speaking: boolean) => void;
   setIsRecording: (recording: boolean) => void;

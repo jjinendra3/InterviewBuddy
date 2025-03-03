@@ -16,8 +16,8 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
   seconds: null,
   minutes: null,
   dsaQuestion: null,
-  setSeconds: (seconds: number | null) => set({ seconds }),
-  setMinutes: (minutes: number | null) => set({ minutes }),
+  setSeconds: (seconds: string | null) => set({ seconds }),
+  setMinutes: (minutes: string | null) => set({ minutes }),
   setIsLoading: (loading: boolean) => set({ isLoading: loading }),
   setAiSpeaking: (speaking: boolean) => set({ aiSpeaking: speaking }),
   setIsRecording: (recording: boolean) => set({ isRecording: recording }),
@@ -29,8 +29,9 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
   },
   startInterview: async (round: string) => {
     try {
-      if (!generalStore.getState().candidate?.id)
-        throw new Error("User not found");
+      const candidate = generalStore.getState().candidate;
+      console.log(candidate, round);
+      if (!candidate?.id) throw new Error("User not found");
 
       const response = await fetch("/api/start-interview", {
         method: "POST",
@@ -39,20 +40,19 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
         },
         body: JSON.stringify({
           round: round,
-          userId: generalStore.getState().candidate?.id,
+          userId: candidate?.id,
         }),
       });
       const res = await response.json();
       if (res.status === 500) throw new Error("Candidate not found");
-      generalStore.getState().setInterviewId(res.data.id);
-      generalStore.getState().setRound("google-hr");
-      generalStore.getState().setRound("google-hr");
+      generalStore.getState().setInterviewId(res.id);
+      generalStore.getState().setRound(res.round);
       const formData = new FormData();
-      formData.append("interviewId", res.data.id);
+      formData.append("interviewId", res.id);
       formData.append("timeLeft", "TimeLeft: 10:00");
       formData.append(
         "text",
-        `Hello, My name is ${generalStore.getState().candidate?.name}`
+        `Hello, My name is ${generalStore.getState().candidate?.name}`,
       );
       formData.append("round", round);
       const firstAudio = await fetch("/api/interview", {
@@ -60,12 +60,15 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
         body: formData,
       });
       const data = await firstAudio.json();
-      const audioBlob = convertBase64ToAudioWithPackage(data.audio);
+      const audioBlob = new Blob(
+        [Uint8Array.from(atob(data.audio), (c) => c.charCodeAt(0))],
+        { type: "audio/wav" },
+      );
       generalStore.getState().setStartAudio(audioBlob);
-      return data.id;
+      return true;
     } catch (error) {
       console.error(error);
-      return null;
+      return false;
     }
   },
   endInterview: async () => {
@@ -193,15 +196,18 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
     }
   },
   sendAudio: async (audioBlob: Blob) => {
-    const interviewId = await localStorage.getItem("interviewId ");
-    const seconds = await localStorage.getItem("seconds");
-    const minutes = await localStorage.getItem("minutes");
+    const interviewId = generalStore.getState().interviewId;
+    const seconds = get().seconds;
+    const minutes = get().minutes;
+    console.log("Sending audio to server", interviewId, minutes, seconds);
+
     if (!audioBlob || !interviewId) {
       get().startRecording();
       return;
     }
+    console.log("Sending audio to server", interviewId, minutes, seconds);
     const formData = new FormData();
-    formData.append("audio", audioBlob, "recording.webm");
+    formData.append("file", audioBlob, "recording.webm");
     formData.append("interviewId", interviewId);
     formData.append("timeLeft", `TimeLeft: ${minutes}:${seconds}`);
     set({ isLoading: true });

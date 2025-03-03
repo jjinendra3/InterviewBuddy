@@ -5,7 +5,6 @@ import { auth } from "./firebase";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
-  signInWithEmailAndPassword,
 } from "firebase/auth";
 import {
   GoogleAuthProvider,
@@ -33,7 +32,7 @@ export const generalStore = create<GeneralStore>()(
           const response = await createUserWithEmailAndPassword(
             auth,
             email,
-            password
+            password,
           );
           const user = await fetch("/api/user", {
             method: "POST",
@@ -51,46 +50,14 @@ export const generalStore = create<GeneralStore>()(
           if (!user.ok) throw new Error("User not found");
           set({
             candidate: {
-              id: data.uid,
-              name: data.name,
-              email: data.email,
+              id: data.user.uid,
+              name: data.user.name,
+              email: data.user.email,
             },
           });
           return { message: "User SignUp Successful!", success: true };
         } catch (error) {
-          return { message: error!.toString(), success: false };
-        }
-      },
-      login: async (email, password) => {
-        try {
-          const response = await signInWithEmailAndPassword(
-            auth,
-            email,
-            password
-          );
-          const user = await fetch("/api/user", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email,
-              name,
-              uid: response.user.uid,
-            }),
-          });
-
-          const data = await user.json();
-          if (!user.ok) throw new Error("User not found");
-          set({
-            candidate: {
-              id: data.uid,
-              name: data.name,
-              email: data.email,
-            },
-          });
-          return { message: "User Login Successful!", success: true };
-        } catch (error) {
+          await get().logout();
           return { message: error!.toString(), success: false };
         }
       },
@@ -99,6 +66,7 @@ export const generalStore = create<GeneralStore>()(
           const provider = new GoogleAuthProvider();
           const result = await signInWithPopup(auth, provider);
           const authUser = result.user;
+          console.log(authUser);
           if (!authUser)
             return { message: "User not found through Google", success: false };
           const user = await fetch("/api/user", {
@@ -114,15 +82,15 @@ export const generalStore = create<GeneralStore>()(
           });
 
           const data = await user.json();
-          if (!user.ok) {
+          if (!user.ok || !data.success) {
             await get().logout();
             throw new Error("User not found");
           }
           set({
             candidate: {
-              id: data.uid,
-              name: data.name,
-              email: data.email,
+              id: data.user.uid,
+              name: data.user.name,
+              email: data.user.email,
             },
           });
           return { message: "User Login Successful!", success: true };
@@ -169,6 +137,6 @@ export const generalStore = create<GeneralStore>()(
       partialize: (state) => ({
         candidate: state.candidate,
       }),
-    }
-  )
+    },
+  ),
 );

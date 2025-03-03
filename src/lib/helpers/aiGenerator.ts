@@ -1,7 +1,6 @@
 import { GEMINI_1_5_FLASH } from "../utils/ai";
 import { CoreMessage, generateObject } from "ai";
 import { z } from "zod";
-import fs from "fs";
 import { AI } from "../types/types";
 import { getPrompts } from "@/db/dbFunctions";
 const schema = z.object({
@@ -15,6 +14,7 @@ export const aiGenerator = async (
   round: string,
   text: string,
   history: CoreMessage[],
+  file: ArrayBuffer | null,
   timeLeft?: string,
   code?: string,
 ): Promise<AI | null> => {
@@ -28,21 +28,23 @@ export const aiGenerator = async (
               text: text,
             },
           ]
-        : [
-            {
-              type: "text",
-              text: `TimeLeft: ${timeLeft}`,
-            },
-            {
-              type: "file",
-              mimeType: "audio/mpeg",
-              data: fs.readFileSync("./recording.webm"),
-            },
-            {
-              type: "text",
-              text: `code: ${code}`,
-            },
-          ],
+        : file
+          ? [
+              {
+                type: "text",
+                text: `TimeLeft: ${timeLeft}`,
+              },
+              {
+                type: "file",
+                mimeType: "audio/mpeg",
+                data: file,
+              },
+              {
+                type: "text",
+                text: `code: ${code}`,
+              },
+            ]
+          : "",
     };
     const systemInstruction = await getPrompts(round);
     if (!systemInstruction) {
