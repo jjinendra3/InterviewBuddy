@@ -21,6 +21,8 @@ export default function Home() {
   const { playAudio } = interviewStore();
   const [minutes, setMinutes] = useState(10);
   const [seconds, setSeconds] = useState(0);
+  const mins = interviewStore((state) => state.minutes);
+  const secs = interviewStore((state) => state.seconds);
   const startAudio = generalStore((state) => state.startAudio);
   const setStartAudio = generalStore((state) => state.setStartAudio);
   const candidate = generalStore((state) => state.candidate);
@@ -37,6 +39,12 @@ export default function Home() {
     return () =>
       document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, []);
+
+  useEffect(() => {
+    if (mins === "00" && secs === "00") {
+      router.push("/end");
+    }
+  }, [mins, secs, router]);
 
   useEffect(() => {
     if (!candidate) {

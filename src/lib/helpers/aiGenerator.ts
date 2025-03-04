@@ -31,10 +31,6 @@ export const aiGenerator = async (
         : file
           ? [
               {
-                type: "text",
-                text: `TimeLeft: ${timeLeft}`,
-              },
-              {
                 type: "file",
                 mimeType: "audio/mpeg",
                 data: file,
@@ -53,7 +49,19 @@ export const aiGenerator = async (
     const response = await generateObject({
       model: GEMINI_1_5_FLASH,
       system: systemInstruction,
-      messages: [...history, audioInput],
+      messages: [
+        ...history,
+        {
+          role: "assistant",
+          content: [
+            {
+              type: "text",
+              text: `TimeLeft: ${timeLeft}`,
+            },
+          ],
+        },
+        audioInput,
+      ],
       schema: schema,
     });
     return response.object;

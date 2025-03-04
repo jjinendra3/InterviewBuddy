@@ -30,7 +30,6 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
   startInterview: async (round: string) => {
     try {
       const candidate = generalStore.getState().candidate;
-      console.log(candidate, round);
       if (!candidate?.id) throw new Error("User not found");
 
       const response = await fetch("/api/start-interview", {
@@ -76,6 +75,7 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
       if (!generalStore.getState().candidate) return false;
       const interviewId = generalStore.getState().interviewId;
       if (!interviewId) return false;
+      console.log("Ending interview", interviewId);
       generalStore.getState().setInterviewId(null);
       const response = await fetch(`/api/end`, {
         method: "POST",
@@ -89,18 +89,8 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
       const data = await response.json();
 
       if (response.status === 500) return false;
-      const pdfToBlob = new Blob(
-        [Uint8Array.from(atob(data.data), (c) => c.charCodeAt(0))],
-        { type: "application/pdf" },
-      );
-      const downloadUrl = window.URL.createObjectURL(pdfToBlob);
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      link.setAttribute("download", "EvaluationReport.pdf");
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(downloadUrl);
+      window.open(data.data, "_blank");
+      window.location.href = "/";
       return true;
     } catch (error) {
       console.error("PDF download error:", error);
@@ -212,6 +202,7 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
     formData.append("file", audioBlob, "recording.webm");
     formData.append("interviewId", interviewId);
     formData.append("timeLeft", `TimeLeft: ${minutes}:${seconds}`);
+    formData.append("round", "google-hr");
     set({ isLoading: true });
 
     try {

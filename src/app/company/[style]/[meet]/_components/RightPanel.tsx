@@ -8,6 +8,7 @@ import {
   AiLottiePlayer,
   UserLottiePlayer,
 } from "@/components/lottie/dotlottie";
+import Link from "next/link";
 import { Square, Mic } from "lucide-react";
 import { interviewStore } from "@/lib/utils/interviewStore";
 export default function RightPanel({
@@ -21,25 +22,19 @@ export default function RightPanel({
   setMinutes: React.Dispatch<React.SetStateAction<number>>;
   setSeconds: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const {
-    isLoading,
-    isRecording,
-    aiSpeaking,
-    startRecording,
-    stopRecording,
-    endInterview,
-  } = interviewStore();
+  const { isLoading, isRecording, aiSpeaking, startRecording, stopRecording } =
+    interviewStore();
   return (
     <ResizablePanel
       defaultSize={25}
       className="flex flex-col h-full bg-white/80 p-4 rounded-lg shadow-lg m-2 backdrop-blur-sm"
     >
-      <Button
-        className="bg-red-500 flex justify-center items-center font-mono font-bold text-white text-xl"
-        onClick={endInterview}
+      <Link
+        href="/end"
+        className="mb-2 flex justify-center items-center font-mono font-bold text-white text-xl"
       >
-        End Meeting
-      </Button>
+        <Button>End Meeting</Button>
+      </Link>
       <CountdownTimer
         minutes={minutes}
         seconds={seconds}

@@ -1,53 +1,29 @@
-import puppeteer from "puppeteer";
-
-export async function htmlToPdf(
-  html: string,
-  options: {
-    format?: "A4" | "Letter" | "Legal";
-    landscape?: boolean;
-    margin?: {
-      top?: string;
-      right?: string;
-      bottom?: string;
-      left?: string;
-    };
-    headerTemplate?: string;
-    footerTemplate?: string;
-    displayHeaderFooter?: boolean;
-  } = {},
-): Promise<string> {
-  const pdfOptions = {
-    format: options.format || "A4",
-    landscape: options.landscape || false,
-    margin: options.margin || {
-      top: "40px",
-      right: "40px",
-      bottom: "40px",
-      left: "40px",
-    },
-    printBackground: true,
-    displayHeaderFooter: options.displayHeaderFooter || false,
-    headerTemplate: options.headerTemplate || "",
-    footerTemplate: options.footerTemplate || "",
-  };
-
-  let browser;
+import axios from "axios";
+export async function htmlToPdf(html: string) {
   try {
-    browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
+    const options = {
+      method: "POST",
+      url: "https://api.pdfendpoint.com/v1/convert",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.PDF_ENDPOINT}`,
+      },
+      data: JSON.stringify({
+        html: html,
+        sandbox: true,
+        orientation: "vertical",
+        page_size: "A4",
+        margin_top: "2cm",
+        margin_bottom: "2cm",
+        margin_left: "2cm",
+        margin_right: "2cm",
+      }),
+    };
 
-    const page = await browser.newPage();
-
-    await page.setContent(html, { waitUntil: "networkidle0" });
-
-    const pdfBuffer = await page.pdf(pdfOptions);
-
-    return Buffer.from(pdfBuffer).toString("base64");
-  } finally {
-    if (browser) {
-      await browser.close();
-    }
+    const response = await axios.request(options);
+    return response.data;
+  } catch (error) {
+    console.error("PDF generation error:", error);
+    return null;
   }
 }

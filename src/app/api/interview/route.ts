@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     const timeLeft = formData.get("timeLeft") as string;
     const text = formData.get("text") as string;
     const round = formData.get("round") as string;
-    if (!interviewId || !timeLeft || !text || !round) {
+    if (!interviewId || !timeLeft || !round) {
       return new Response("Missing parameters", { status: 500 });
     }
     const history = await getChatHistory(interviewId);
