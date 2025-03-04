@@ -10,23 +10,17 @@ const schema = z.object({
 
 export async function POST(req: Request) {
   try {
-    const { file, country } = await req.json();
-
+    const formData = await req.formData();
+    const file = formData.get("file") as File;
+    const country = formData.get("country") as string;
     if (!file || !country) {
       return Response.json(
         { error: "Missing file or country" },
         { status: 400 },
       );
     }
-
-    let fileBuffer;
-    try {
-      const base64Data = file.includes(",") ? file.split(",")[1] : file;
-      fileBuffer = Buffer.from(base64Data, "base64");
-    } catch {
-      return Response.json({ error: "Invalid file encoding" }, { status: 400 });
-    }
-
+    const fileBase64 = await file.arrayBuffer();
+    const fileBuffer = Buffer.from(fileBase64);
     const systemInstruction = await getPrompts("resume-review");
     if (!systemInstruction) {
       return Response.json(
@@ -65,7 +59,8 @@ export async function POST(req: Request) {
     });
 
     return Response.json(result.object);
-  } catch {
+  } catch (error) {
+    console.error(error);
     return Response.json(
       { error: "Failed to process resume" },
       { status: 500 },
