@@ -42,7 +42,7 @@ export default function Home() {
     if (!candidate) {
       toaster("Please Login to start the meet.");
       setTimeout(() => {
-        router.push("/login");
+        router.push("/");
       }, 1000);
       return;
     }

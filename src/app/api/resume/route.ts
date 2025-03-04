@@ -9,49 +9,66 @@ const schema = z.object({
 });
 
 export async function POST(req: Request) {
-  const formData = await req.formData();
+  try {
+    const { file, country } = await req.json();
 
-  const file = formData.get("file") as File;
-  const country = formData.get("country") as string;
-  if (!file || !country) {
-    return new Response(JSON.stringify({ error: "Missing file or country" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
+    if (!file || !country) {
+      return Response.json(
+        { error: "Missing file or country" },
+        { status: 400 },
+      );
+    }
+
+    let fileBuffer;
+    try {
+      const base64Data = file.includes(",") ? file.split(",")[1] : file;
+      fileBuffer = Buffer.from(base64Data, "base64");
+    } catch {
+      return Response.json({ error: "Invalid file encoding" }, { status: 400 });
+    }
+
+    const systemInstruction = await getPrompts("resume-review");
+    if (!systemInstruction) {
+      return Response.json(
+        { error: "System instruction not found" },
+        { status: 500 },
+      );
+    }
+
+    const result = await generateObject({
+      model: GEMINI_1_5_FLASH,
+      messages: [
+        {
+          role: "user",
+          content: file
+            ? [
+                {
+                  type: "text",
+                  text: `Country: ${country}`,
+                },
+                {
+                  type: "file",
+                  mimeType: "application/pdf",
+                  data: fileBuffer,
+                },
+              ]
+            : [
+                {
+                  type: "text",
+                  text: `Country: ${country}`,
+                },
+              ],
+        },
+      ],
+      system: systemInstruction,
+      schema,
     });
-  }
-  const systemInstruction = await getPrompts("resume-review");
-  if (!systemInstruction) {
-    return new Response(
-      JSON.stringify({ error: "System instruction not found" }),
-      {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      },
+
+    return Response.json(result.object);
+  } catch {
+    return Response.json(
+      { error: "Failed to process resume" },
+      { status: 500 },
     );
   }
-
-  const result = await generateObject({
-    model: GEMINI_1_5_FLASH,
-    messages: [
-      {
-        role: "user",
-        content: [
-          { type: "text", text: `Country: ${country}` },
-          {
-            type: "file",
-            data: await file.arrayBuffer(),
-            mimeType: "application/pdf",
-          },
-        ],
-      },
-    ],
-    system: systemInstruction,
-    schema,
-  });
-  console.log(result.object);
-
-  return new Response(JSON.stringify(result.object), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
 }

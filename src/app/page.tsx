@@ -108,15 +108,16 @@ export default function Home() {
                     </Button>
                   </Link>
                   {!candidate && (
-                    <Link href="/signup">
-                      <Button
-                        variant="outline"
-                        size="lg"
-                        className="w-full sm:w-auto bg-white text-primary hover:bg-secondary"
-                      >
-                        Sign Up
-                      </Button>
-                    </Link>
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      className="w-full sm:w-auto bg-white text-primary hover:bg-secondary"
+                      onClick={async () => {
+                        await loginWithGoogle();
+                      }}
+                    >
+                      Sign Up
+                    </Button>
                   )}
                 </div>
               </motion.div>

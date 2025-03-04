@@ -77,7 +77,7 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
       const interviewId = generalStore.getState().interviewId;
       if (!interviewId) return false;
       generalStore.getState().setInterviewId(null);
-      const response = await fetch(`/api/end/${interviewId}`, {
+      const response = await fetch(`/api/end`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -87,11 +87,13 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
         }),
       });
       const data = await response.json();
-      if (data.status === 500) return false;
 
       if (response.status === 500) return false;
-      const pdfBlob = await convertBase64ToAudioWithPackage(data.pdf);
-      const downloadUrl = window.URL.createObjectURL(pdfBlob);
+      const pdfToBlob = new Blob(
+        [Uint8Array.from(atob(data.data), (c) => c.charCodeAt(0))],
+        { type: "application/pdf" },
+      );
+      const downloadUrl = window.URL.createObjectURL(pdfToBlob);
       const link = document.createElement("a");
       link.href = downloadUrl;
       link.setAttribute("download", "EvaluationReport.pdf");

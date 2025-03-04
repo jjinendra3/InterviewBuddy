@@ -1,4 +1,5 @@
-import { getChatHistory } from "@/db/dbFunctions";
+import { getChatHistory, getPrompts } from "@/db/dbFunctions";
+import { htmlToPdf } from "@/lib/helpers/generatePDF";
 import { GEMINI_1_5_FLASH } from "@/lib/utils/ai";
 
 import { CoreMessage, generateText } from "ai";
@@ -14,12 +15,30 @@ export async function POST(req: Request) {
   try {
     const { interviewId } = await req.json();
     const history = await getChatHistory(interviewId);
-    const endInterviewPrompt = "as";
+    const endInterviewPrompt = await getPrompts("end-interview");
+    if (!endInterviewPrompt) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+        }),
+        { status: 500 },
+      );
+    }
     const end = await endInterview(endInterviewPrompt, history);
-    console.log(end);
-    // await pdfGenerator(end);
-    return new Response("Yes", { status: 500 });
+    const response = await htmlToPdf(end);
+    return new Response(
+      JSON.stringify({
+        success: true,
+        data: response,
+      }),
+      { status: 500 },
+    );
   } catch {
-    return new Response("No", { status: 500 });
+    return new Response(
+      JSON.stringify({
+        success: false,
+      }),
+      { status: 500 },
+    );
   }
 }

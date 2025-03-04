@@ -18,11 +18,11 @@ export type GeneralStore = {
   setInterviewId: (id: string | null) => void;
   setCandidate: (id: string, name: string, email: string) => void;
 
-  signup: (email: string, name: string, password: string) => Promise<Auth>;
+  // signup: (email: string, name: string, password: string) => Promise<Auth>;
   // login: (email: string, password: string) => Promise<Auth>;
   logout: () => Promise<Auth>;
   loginWithGoogle: () => Promise<Auth>;
-  loginWithGitHub: () => Promise<Auth>;
+  // loginWithGitHub: () => Promise<Auth>;
 
   rehydrateState?: () => void;
 };

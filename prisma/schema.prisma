@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("NEXT_PUBLIC_DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 model Conversation {
@@ -29,11 +29,11 @@ model Interview {
 }
 
 model User {
-  email     String
+  email     String      @unique
   name      String
   createdAt DateTime    @default(now())
   updatedAt DateTime    @default(now())
-  uid       String      @id
+  uid       String      @id @default(cuid())
   Interview Interview[]
 }
 

@@ -1,15 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Mail, Lock, User } from "lucide-react";
-import { toaster } from "@/components/toast";
-import { generalStore } from "@/lib/utils/generalStore";
 import { useRouter } from "next/navigation";
-import { SuccessLottiePlayer } from "@/components/lottie/dotlottie";
+// import { SuccessLottiePlayer } from "@/components/lottie/dotlottie";
 import { auth } from "@/lib/utils/firebase";
 import LoginWithGoogle from "@/components/loginWithGoogle";
 export default function Signup() {
@@ -18,31 +16,26 @@ export default function Signup() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [signed, setSigned] = useState<boolean>(false);
-  const signUp = generalStore((state) => state.signup);
-  const handleSignup = async () => {
-    try {
-      const response = await signUp(email, name, password);
-      if (!response.success) {
-        throw new Error(response.message);
-      }
-      setSigned(true);
-      setTimeout(() => {
-        route.push("/");
-      }, 1000);
-      //eslint-disable-next-line
-    } catch (error: any) {
-      toaster(error);
-    }
-  };
-
-  if (signed) {
-    return (
-      <div className="h-16 w-16 bg-gradient-custom flex flex-col items-center justify-center p-4">
-        <SuccessLottiePlayer />
-      </div>
-    );
-  }
+  // const [signed, setSigned] = useState<boolean>(false);
+  // const signUp = generalStore((state) => state.signup);
+  // const handleSignup = async () => {
+  //   try {
+  //     const response = await signUp(email, name, password);
+  //     if (!response.success) {
+  //       throw new Error(response.message);
+  //     }
+  //     setSigned(true);
+  //     setTimeout(() => {
+  //       route.push("/");
+  //     }, 1000);
+  //     //eslint-disable-next-line
+  //   } catch (error: any) {
+  //     toaster(error);
+  //   }
+  // };
+  useEffect(() => {
+    route.push("/");
+  }, []);
 
   return (
     <div className="h-screen w-full bg-gradient-custom flex flex-col items-center justify-center p-4">
@@ -123,7 +116,7 @@ export default function Signup() {
             </div>
           </div>
           <Button
-            onClick={handleSignup}
+            onClick={() => {}}
             className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
           >
             Sign up
@@ -133,7 +126,7 @@ export default function Signup() {
         <p className="mt-8 text-center text-sm text-gray-600">
           Already have an account?{" "}
           <Link
-            href="/login"
+            href="/"
             className="font-medium text-primary hover:text-primary/80"
           >
             Log in

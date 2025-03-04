@@ -92,7 +92,8 @@ export default function ChooseInterviewType() {
           onClick={async () => {
             console.log(candidate);
             if (!candidate) {
-              router.push("/login");
+              router.push("/");
+              toast.error("Please login to start interview");
               return;
             }
             const load = toast.loading("Loading Interview...");
