@@ -62,23 +62,6 @@ export default function RightPanel({
           <AiLottiePlayer />
         </div>
       )}
-      <div className="flex justify-center space-x-4">
-        <Button
-          onClick={isRecording ? () => stopRecording() : () => startRecording()}
-          variant={isRecording ? "destructive" : "default"}
-          className="w-32"
-        >
-          {isRecording ? (
-            <>
-              <Square className="mr-2 h-4 w-4" /> Speak Now...
-            </>
-          ) : (
-            <>
-              <Mic className="mr-2 h-4 w-4" /> Start Speaking
-            </>
-          )}
-        </Button>
-      </div>
     </ResizablePanel>
   );
 }
