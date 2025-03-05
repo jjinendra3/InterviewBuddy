@@ -22,8 +22,7 @@ export async function htmlToPdf(html: string) {
 
     const response = await axios.request(options);
     return response.data;
-  } catch (error) {
-    console.error("PDF generation error:", error);
+  } catch {
     return null;
   }
 }

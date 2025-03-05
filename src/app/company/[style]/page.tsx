@@ -100,10 +100,10 @@ export default function ChooseInterviewType() {
             try {
               const roundParam = `${pathname.split("/")[2]}-${selectedType}`;
               const response = await introduction(roundParam);
-              if (!response) {
+              if (!response.success) {
                 throw new Error("Failed to start interview");
               }
-              router.push(`/company/${roundParam}/${response}`);
+              router.push(`/company/${roundParam}/${response.id}`);
               toast.success("Lets Go!🚀", {
                 id: load,
               });

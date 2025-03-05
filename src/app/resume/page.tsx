@@ -69,7 +69,7 @@ export default function ResumeReviewPage() {
   return (
     <div className="min-h-screen w-full bg-gradient-custom flex flex-col items-center justify-center p-4">
       <motion.div
-        className="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl"
+        className="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}

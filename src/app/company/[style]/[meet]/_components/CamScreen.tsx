@@ -1,11 +1,16 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import * as faceapi from "face-api.js";
-//TODO: END THE MEET IS CAMERA IS OFF OR GIVE WARNING
-//TODO: ADD A TIMER WHEN CAMER AHAS TWO FACES OR THE CAMERA IS OFF, IF ABOVE 20 SECONDS, END THE MEET
-const ProctorVideo = () => {
+import { toaster } from "@/components/toast";
+
+const ProctorVideo = ({
+  mediaStream,
+  setMediaStream,
+}: {
+  mediaStream: MediaStream | null;
+  setMediaStream: React.Dispatch<React.SetStateAction<MediaStream | null>>;
+}) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
-  const [zeroCount, setZeroCount] = useState(0);
+  // const [zeroCount, setZeroCount] = useState(0);
 
   useEffect(() => {
     const enableVideoStream = async () => {
@@ -52,16 +57,7 @@ const ProctorVideo = () => {
         new faceapi.TinyFaceDetectorOptions(),
       );
       const faceCount = detections.length;
-
-      if (faceCount === 0 || faceCount > 1) {
-        setZeroCount((prev) => prev + 1);
-      }
-      if (zeroCount !== 0) {
-        if (zeroCount > 3) {
-          endMeeting();
-        }
-        alert("Warning! Face count is unusual. Fix Immediately.");
-      }
+      if (faceCount > 1) toaster(`Face Count: ${faceCount}`);
     };
 
     const intervalId = setInterval(detectFaces, 2000);
@@ -69,14 +65,6 @@ const ProctorVideo = () => {
     return () => clearInterval(intervalId);
     //eslint-disable-next-line
   }, []);
-
-  const endMeeting = () => {
-    console.log("Meeting Ended!");
-    if (mediaStream) {
-      mediaStream.getTracks().forEach((track) => track.stop());
-    }
-    alert("Meeting Ended!");
-  };
 
   return <video ref={videoRef} autoPlay muted />;
 };

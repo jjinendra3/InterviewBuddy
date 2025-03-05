@@ -1,6 +1,6 @@
 import { getChatHistory, saveToDbModel, saveToDbUser } from "@/db/dbFunctions";
 import { aiGenerator } from "@/lib/helpers/aiGenerator";
-import { getAudio } from "./helpers/speech";
+import { createAudioBufferFromText } from "./helpers/speech";
 import fs from "fs";
 
 export async function POST(req: Request) {
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
     if (!textGen?.reply || !textGen?.speechToText) {
       return new Response("Error in reponse", { status: 500 });
     }
-    const audio = await getAudio(textGen.reply);
+    const audio = await createAudioBufferFromText(textGen.reply);
     if (!audio) throw "Not Found!";
     await saveToDbUser(textGen.speechToText, interviewId);
     await saveToDbModel(textGen.reply, interviewId);

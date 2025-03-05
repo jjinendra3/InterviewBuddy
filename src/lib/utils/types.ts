@@ -27,13 +27,17 @@ export type GeneralStore = {
   rehydrateState?: () => void;
 };
 
+type InterviewID = {
+  success: boolean;
+  id: string;
+};
 export type InterviewStore = {
   isRecording: boolean;
   aiSpeaking: boolean;
   isLoading: boolean;
   seconds: string | null;
   minutes: string | null;
-  startInterview: (round: string) => Promise<boolean>;
+  startInterview: (round: string) => Promise<InterviewID>;
   endInterview: () => Promise<boolean>;
   setSeconds: (seconds: string | null) => void;
   setMinutes: (minutes: string | null) => void;

@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { ResizablePanel } from "../../../../../components/ui/resizable";
 import CountdownTimer from "../../../../../components/CountdownTimer";
 import CamScreen from "./CamScreen";
@@ -8,9 +9,8 @@ import {
   AiLottiePlayer,
   UserLottiePlayer,
 } from "@/components/lottie/dotlottie";
-import Link from "next/link";
-import { Square, Mic } from "lucide-react";
 import { interviewStore } from "@/lib/utils/interviewStore";
+import { useRouter } from "next/navigation";
 export default function RightPanel({
   minutes,
   seconds,
@@ -22,19 +22,27 @@ export default function RightPanel({
   setMinutes: React.Dispatch<React.SetStateAction<number>>;
   setSeconds: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const { isLoading, isRecording, aiSpeaking, startRecording, stopRecording } =
-    interviewStore();
+  const router = useRouter();
+  const { isLoading, isRecording, aiSpeaking } = interviewStore();
+  const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
+
   return (
     <ResizablePanel
       defaultSize={25}
       className="flex flex-col h-full bg-white/80 p-4 rounded-lg shadow-lg m-2 backdrop-blur-sm"
     >
-      <Link
-        href="/end"
-        className="mb-2 flex justify-center items-center font-mono font-bold text-white text-xl"
-      >
-        <Button>End Meeting</Button>
-      </Link>
+      <div className="w-full flex justify-center items-center">
+        <Button
+          onClick={() => {
+            if (mediaStream) {
+              mediaStream.getTracks().forEach((track) => track.stop());
+            }
+            router.push("/end");
+          }}
+        >
+          End Meeting
+        </Button>
+      </div>
       <CountdownTimer
         minutes={minutes}
         seconds={seconds}
@@ -42,7 +50,7 @@ export default function RightPanel({
         setSeconds={setSeconds}
       />
       <div className="flex rounded-lg shadow-sm p-4 mb-4 bg-red-500">
-        <CamScreen />
+        <CamScreen mediaStream={mediaStream} setMediaStream={setMediaStream} />
       </div>
       {isLoading && (
         <div className="w-full flex flex-col justify-center items-center">

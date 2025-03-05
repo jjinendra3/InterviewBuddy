@@ -27,6 +27,7 @@
     "base64-arraybuffer": "^1.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "elevenlabs": "^1.52.0",
     "encoding": "^0.1.13",
     "face-api.js": "^0.22.2",
     "firebase": "^11.3.1",

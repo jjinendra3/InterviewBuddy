@@ -4,7 +4,7 @@ import { generalStore } from "./generalStore";
 import { convertBase64ToAudioWithPackage } from "./base64toBlob";
 
 const VOICE_MIN_DECIBELS = -60;
-const DELAY_BETWEEN_DIALOGS = 3000;
+const DELAY_BETWEEN_DIALOGS = 1500;
 const DIALOG_MAX_LENGTH = 60000;
 //eslint-disable-next-line
 let MEDIA_RECORDER: any = null;
@@ -64,10 +64,16 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
         { type: "audio/wav" },
       );
       generalStore.getState().setStartAudio(audioBlob);
-      return true;
+      return {
+        success: true,
+        id: res.id,
+      };
     } catch (error) {
       console.error(error);
-      return false;
+      return {
+        success: false,
+        id: "",
+      };
     }
   },
   endInterview: async () => {
@@ -77,6 +83,8 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
       if (!interviewId) return false;
       console.log("Ending interview", interviewId);
       generalStore.getState().setInterviewId(null);
+      await MEDIA_RECORDER.stop();
+
       const response = await fetch(`/api/end`, {
         method: "POST",
         headers: {

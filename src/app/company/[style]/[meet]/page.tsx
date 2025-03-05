@@ -32,7 +32,7 @@ export default function Home() {
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.hidden) {
-        console.log("User has left the tab");
+        toaster("You are not allowed to switch tabs.");
       }
     };
     document.addEventListener("visibilitychange", handleVisibilityChange);
