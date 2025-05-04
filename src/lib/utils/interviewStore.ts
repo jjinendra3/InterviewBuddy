@@ -5,7 +5,7 @@ import { convertBase64ToAudioWithPackage } from "./base64toBlob";
 
 const VOICE_MIN_DECIBELS = -60;
 const DELAY_BETWEEN_DIALOGS = 1500;
-const DIALOG_MAX_LENGTH = 60000;
+const DIALOG_MAX_LENGTH = 30000;
 //eslint-disable-next-line
 let MEDIA_RECORDER: any = null;
 
@@ -16,6 +16,8 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
   seconds: null,
   minutes: null,
   dsaQuestion: null,
+  subtitles: null,
+  setSubtitles: (subtitles: string | null) => set({ subtitles }),
   setSeconds: (seconds: string | null) => set({ seconds }),
   setMinutes: (minutes: string | null) => set({ minutes }),
   setIsLoading: (loading: boolean) => set({ isLoading: loading }),
@@ -64,6 +66,7 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
         { type: "audio/wav" }
       );
       generalStore.getState().setStartAudio(audioBlob);
+      set({ subtitles: data.reply });
       return {
         success: true,
         id: res.id,
@@ -216,6 +219,7 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
         body: formData,
       });
       const data = await firstAudio.json();
+      set({ subtitles: data.reply });
       const audioBlob = convertBase64ToAudioWithPackage(data.audio);
       get().playAudio(audioBlob);
     } catch (error) {
