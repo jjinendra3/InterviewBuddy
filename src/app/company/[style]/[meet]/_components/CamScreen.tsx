@@ -10,7 +10,6 @@ const ProctorVideo = ({
   setMediaStream: React.Dispatch<React.SetStateAction<MediaStream | null>>;
 }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  // const [zeroCount, setZeroCount] = useState(0);
 
   useEffect(() => {
     const enableVideoStream = async () => {
@@ -54,10 +53,11 @@ const ProctorVideo = ({
 
       const detections = await faceapi.detectAllFaces(
         video,
-        new faceapi.TinyFaceDetectorOptions(),
+        new faceapi.TinyFaceDetectorOptions()
       );
       const faceCount = detections.length;
       if (faceCount > 1) toaster(`Face Count: ${faceCount}`);
+
     };
 
     const intervalId = setInterval(detectFaces, 2000);

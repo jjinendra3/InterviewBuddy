@@ -38,7 +38,7 @@ export type InterviewStore = {
   seconds: string | null;
   minutes: string | null;
   startInterview: (round: string) => Promise<InterviewID>;
-  endInterview: () => Promise<boolean>;
+  endInterview: () => Promise<string | null>;
   setSeconds: (seconds: string | null) => void;
   setMinutes: (minutes: string | null) => void;
   setIsLoading: (loading: boolean) => void;

@@ -51,7 +51,7 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
       formData.append("timeLeft", "TimeLeft: 10:00");
       formData.append(
         "text",
-        `Hello, My name is ${generalStore.getState().candidate?.name}`,
+        `Hello, My name is ${generalStore.getState().candidate?.name}`
       );
       formData.append("round", round);
       const firstAudio = await fetch("/api/interview", {
@@ -61,7 +61,7 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
       const data = await firstAudio.json();
       const audioBlob = new Blob(
         [Uint8Array.from(atob(data.audio), (c) => c.charCodeAt(0))],
-        { type: "audio/wav" },
+        { type: "audio/wav" }
       );
       generalStore.getState().setStartAudio(audioBlob);
       return {
@@ -78,13 +78,12 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
   },
   endInterview: async () => {
     try {
-      if (!generalStore.getState().candidate) return false;
+      if (!generalStore.getState().candidate) return null;
       const interviewId = generalStore.getState().interviewId;
-      if (!interviewId) return false;
+      if (!interviewId) return null;
       console.log("Ending interview", interviewId);
       generalStore.getState().setInterviewId(null);
       await MEDIA_RECORDER.stop();
-
       const response = await fetch(`/api/end`, {
         method: "POST",
         headers: {
@@ -95,14 +94,12 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
         }),
       });
       const data = await response.json();
-
-      if (response.status === 500) return false;
-      window.open(data.data, "_blank");
-      window.location.href = "/";
-      return true;
+      if (response.status === 500) return null;
+      console.log(data);
+      return data.data as string;
     } catch (error) {
       console.error("PDF download error:", error);
-      return false;
+      return null;
     }
   },
   startRecording: async () => {

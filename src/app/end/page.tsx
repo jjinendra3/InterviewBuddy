@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { interviewStore } from "@/lib/utils/interviewStore";
+import { toaster } from "@/components/toast";
 const quotes = [
   "The only way to do great work is to love what you do. - Steve Jobs",
   "Success is not final, failure is not fatal: it is the courage to continue that counts. - Winston Churchill",
@@ -23,17 +24,19 @@ export default function LoadingPage() {
 
     return () => clearInterval(interval);
   }, []);
-  useGSAP(() => {
+  useEffect(() => {
     const endTheMeeting = async () => {
       const response = await endMeeting();
       if (!response) {
-        alert(
-          "Error generating the evaluation report. Please try again later.",
+        toaster(
+          "Error generating the evaluation report. Please try again later."
         );
+      } else {
+        window.open(response, "_blank");
       }
     };
     endTheMeeting();
-  });
+  }, [endMeeting]);
 
   return (
     <div className="min-h-screen w-full bg-gradient-custom flex flex-col items-center justify-center p-4">
