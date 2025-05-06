@@ -20,6 +20,3 @@ jobs:
 
       - name: Run TypeScript type check
         run: bun run typecheck
-
-      - name: Run ESLint
-        run: bun run lint

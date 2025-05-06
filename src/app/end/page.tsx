@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
 import { interviewStore } from "@/lib/utils/interviewStore";
 import { toaster } from "@/components/toast";
 const quotes = [
@@ -13,7 +11,6 @@ const quotes = [
   "Believe you can and you're halfway there. - Theodore Roosevelt",
   "The best way to predict the future is to create it. - Peter Drucker",
 ];
-gsap.registerPlugin(useGSAP);
 export default function LoadingPage() {
   const [currentQuote, setCurrentQuote] = useState(0);
   const endMeeting = interviewStore((state) => state.endInterview);
