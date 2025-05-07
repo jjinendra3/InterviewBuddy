@@ -38,11 +38,12 @@ export default function RightPanel({
     >
       <div className="w-full flex justify-center items-center">
         <Button
-          onClick={() => {
+          onClick={async () => {
             if (mediaStream) {
               mediaStream.getTracks().forEach((track) => track.stop());
             }
-            router.push("/end");
+            await stopConversation();
+            router.replace("/end");
           }}
         >
           End Meeting

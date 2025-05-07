@@ -12,7 +12,8 @@ export type GeneralStore = {
   candidate: Candidate | null;
   round: string | null;
   startAudio: Blob | null;
-
+  resume: Blob | null;
+  setResume: (resume: Blob | null) => void;
   setRound: (round: string) => void;
   setStartAudio: (audio: Blob | null) => void;
   setInterviewId: (id: string | null) => void;
@@ -31,6 +32,11 @@ type InterviewID = {
   success: boolean;
   id: string;
 };
+
+export type Conversation = {
+  role: string;
+  content: string;
+};
 export type InterviewStore = {
   isRecording: boolean;
   aiSpeaking: boolean;
@@ -38,6 +44,8 @@ export type InterviewStore = {
   seconds: string | null;
   minutes: string | null;
   subtitles: string | null;
+  conversation: Conversation[];
+  setConversation: (conversation: Conversation[]) => void;
   setSubtitles: (subtitles: string | null) => void;
   startInterview: (round: string) => Promise<InterviewID>;
   endInterview: () => Promise<string | null>;

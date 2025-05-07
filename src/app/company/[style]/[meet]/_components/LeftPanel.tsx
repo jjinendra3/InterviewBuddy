@@ -4,7 +4,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
   ResizableHandle,
-} from "../../../../../components/ui/resizable";
+} from "@/components/ui/resizable";
 import { CircleUserRound } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { interviewStore } from "@/lib/utils/interviewStore";
@@ -16,9 +16,7 @@ interface LeftPanelProps {
 
 export default function LeftPanel({ code, setCode }: LeftPanelProps) {
   const pathname = usePathname();
-  const { subtitles, aiSpeaking } = interviewStore();
-
-  const showSubtitle = subtitles && aiSpeaking;
+  const { subtitles } = interviewStore();
 
   return (
     <ResizablePanel defaultSize={75} className="flex flex-col h-full">
@@ -59,7 +57,7 @@ export default function LeftPanel({ code, setCode }: LeftPanelProps) {
       ) : (
         <div
           className={`h-full flex flex-col gap-6 items-center p-6 text-center backdrop-blur-sm transition-all duration-300 ease-in-out ${
-            showSubtitle ? "justify-between" : "justify-center"
+            "justify-center"
           }`}
         >
           <div className="flex flex-col gap-4 items-center">
@@ -69,8 +67,8 @@ export default function LeftPanel({ code, setCode }: LeftPanelProps) {
             </h1>
           </div>
 
-          {showSubtitle && (
-            <div className="bg-white/90 text-white w-full p-4 rounded-xl shadow-xl max-w-3xl">
+          {subtitles && (
+            <div className="bg-white/90 text-white w-full p-4 rounded-xl shadow-xl">
               <p className="text-base font-medium leading-relaxed whitespace-pre-wrap text-gray-800">
                 {subtitles}
               </p>

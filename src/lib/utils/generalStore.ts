@@ -19,7 +19,8 @@ export const generalStore = create<GeneralStore>()(
         }),
       round: null,
       setRound: (round) => set({ round }),
-
+      resume: null,
+      setResume: (resume) => set({ resume }),
       loginWithGoogle: async () => {
         try {
           const provider = new GoogleAuthProvider();
@@ -96,6 +97,6 @@ export const generalStore = create<GeneralStore>()(
       partialize: (state) => ({
         candidate: state.candidate,
       }),
-    },
-  ),
+    }
+  )
 );
