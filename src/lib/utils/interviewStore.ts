@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { InterviewStore } from "./types";
+import type { Conversation, InterviewStore } from "./types";
 import { generalStore } from "./generalStore";
 import { convertBase64ToAudioWithPackage } from "./base64toBlob";
 
@@ -17,6 +17,13 @@ export const interviewStore = create<InterviewStore>()((set, get) => ({
   minutes: null,
   dsaQuestion: null,
   subtitles: null,
+  conversation: [
+    {
+      role: "system",
+      content: `You are an AI assistant for a mock interview platform. You will ask the user questions and respond to their answers. You will also provide feedback on their performance.`,
+    },
+  ],
+  setConversation: (conversation: Conversation[]) => set({ conversation }),
   setSubtitles: (subtitles: string | null) => set({ subtitles }),
   setSeconds: (seconds: string | null) => set({ seconds }),
   setMinutes: (minutes: string | null) => set({ minutes }),

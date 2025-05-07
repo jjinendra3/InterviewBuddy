@@ -17,7 +17,7 @@ export default function Home() {
   const [seconds, setSeconds] = useState(0);
   const mins = interviewStore((state) => state.minutes);
   const secs = interviewStore((state) => state.seconds);
-
+  const setConversation = interviewStore((state) => state.setConversation);
   const { setSubtitles } = interviewStore();
   const candidate = generalStore((state) => state.candidate);
   if (!candidate) {
@@ -25,10 +25,26 @@ export default function Home() {
   }
   const conversation = useConversation({
     onConnect: () => console.log("Connected"),
-    onDisconnect: (error) => console.log("Disconnected", error),
+    onDisconnect: (error) => {
+      if (error) {
+        console.error("Disconnected:", error);
+      } else {
+        console.log("Disconnected");
+      }
+    },
     onMessage: (message: { message: string; source: string }) => {
-      console.log("Message received:", message);
-      setSubtitles(message.message);
+      if (message.source === "ai") {
+        setSubtitles(message.message);
+      } else {
+        setSubtitles(null);
+      }
+      setConversation([
+        ...interviewStore.getState().conversation,
+        {
+          role: message.source === "ai" ? "assistant" : "user",
+          content: message.message,
+        },
+      ]);
     },
     onError: (error) => console.error("Error:", error),
   });
@@ -49,7 +65,8 @@ export default function Home() {
 
   useEffect(() => {
     startConversation();
-  }, [startConversation]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const stopConversation = useCallback(async () => {
     await conversation.endSession();

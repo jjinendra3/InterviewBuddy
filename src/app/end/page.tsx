@@ -1,63 +1,54 @@
 "use client";
-
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { EvaluationDashboard } from "@/components/end/evaluation-dashboard";
 import { interviewStore } from "@/lib/utils/interviewStore";
-import { toaster } from "@/components/toast";
-const quotes = [
-  "The only way to do great work is to love what you do. - Steve Jobs",
-  "Success is not final, failure is not fatal: it is the courage to continue that counts. - Winston Churchill",
-  "The future belongs to those who believe in the beauty of their dreams. - Eleanor Roosevelt",
-  "Believe you can and you're halfway there. - Theodore Roosevelt",
-  "The best way to predict the future is to create it. - Peter Drucker",
-];
-export default function LoadingPage() {
-  const [currentQuote, setCurrentQuote] = useState(0);
-  const endMeeting = interviewStore((state) => state.endInterview);
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentQuote((prev) => (prev + 1) % quotes.length);
-    }, 5000);
+import { useEffect, useState } from "react";
+export default function Home() {
+  const [evaluation, setEvaluation] = useState(null);
+  const [error, setError] = useState("");
+  const conversation = interviewStore((state) => state.conversation);
 
-    return () => clearInterval(interval);
-  }, []);
   useEffect(() => {
-    const endTheMeeting = async () => {
-      const response = await endMeeting();
-      if (!response) {
-        toaster(
-          "Error generating the evaluation report. Please try again later."
-        );
-      } else {
-        window.open(response, "_blank");
+    async function fetchEvaluation() {
+      const response = await fetch("/api/save", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          conversation,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch evaluation");
       }
+      const data = await response.json();
+      console.log(data);
+      if (data.success) {
+        setEvaluation(data.data.object);
+      } else {
+        setError("Failed to fetch evaluation");
+      }
+    }
+    fetchEvaluation()
+      .then(() => {
+        console.log("Evaluation fetched successfully");
+      })
+      .catch((err) => {
+        console.error(err);
+        setError("Failed to fetch evaluation");
+      });
+    return () => {
+      setEvaluation(null);
+      setError("");
     };
-    endTheMeeting();
-  }, [endMeeting]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
-    <div className="min-h-screen w-full bg-gradient-custom flex flex-col items-center justify-center p-4">
-      <motion.div
-        className="text-white text-6xl mb-8"
-        animate={{ rotate: 360 }}
-        transition={{
-          duration: 2,
-          repeat: Number.POSITIVE_INFINITY,
-          ease: "linear",
-        }}
-      >
-        ⚙️
-      </motion.div>
-      <motion.div
-        className="text-center max-w-md"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.5 }}
-        key={currentQuote}
-      >
-        <p className="text-white text-lg italic">{`"${quotes[currentQuote]}"`}</p>
-      </motion.div>
-    </div>
+    <main className="min-h-screen bg-gradient-to-r from-rose-300 via-amber-300 to-amber-200">
+      <div className="container mx-auto py-8 px-4">
+        <EvaluationDashboard evaluation={evaluation} error={error} />
+      </div>
+    </main>
   );
 }

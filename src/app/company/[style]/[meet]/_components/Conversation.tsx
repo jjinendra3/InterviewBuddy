@@ -12,10 +12,8 @@ export function Conversation({
       : "bg-yellow-100 text-yellow-800";
 
   return (
-    <div className="max-w-md mx-auto mt-2 p-6 rounded-2xl shadow-xl bg-white space-y-6 border border-gray-200">
-      <h2 className="text-2xl font-semibold text-center text-gray-800">
-        Voice Conversation
-      </h2>
+    <div className="max-w-md mx-auto mt-6 p-6 rounded-2xl shadow-xl bg-white space-y-6 border border-gray-200">
+    
 
       <div className="text-center">
         <p
@@ -24,7 +22,7 @@ export function Conversation({
           Status: {conversation.status}
         </p>
         <p className="mt-2 text-sm text-gray-600">
-          Agent is currently{" "}
+          Inteviewer is currently{" "}
           <span className="font-medium">
             {conversation.isSpeaking ? "speaking" : "listening"}
           </span>
@@ -36,7 +34,7 @@ export function Conversation({
         <button
           onClick={stopConversation}
           disabled={conversation.status !== "connected"}
-          className="px-6 py-2 rounded-lg bg-red-600 text-white font-semibold shadow-md transition hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+          className="px-3 py-1 rounded-lg bg-red-600 text-white font-semibold shadow-md transition hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
           Stop Conversation
         </button>
