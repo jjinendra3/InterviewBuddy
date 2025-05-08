@@ -6,12 +6,13 @@ import RightPanel from "./_components/RightPanel";
 import { ResizablePanelGroup } from "@/components/ui/resizable";
 import { generalStore } from "@/lib/utils/generalStore";
 import { toaster } from "@/components/toast";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { interviewStore } from "@/lib/utils/interviewStore";
 import { useConversation } from "@11labs/react";
 
 export default function Home() {
   const router = useRouter();
+  const pathname = usePathname();
   const [code, setCode] = useState(
     '#include<iostream>\nusing namespace std;\n\nint main(){\n\tcout<<"Hello World";\n}'
   );
@@ -56,7 +57,7 @@ export default function Home() {
     try {
       const response = await fetch("/api/get-prompts", {
         method: "POST",
-        body: JSON.stringify({ prompt: "google-tech" }),
+        body: JSON.stringify({ prompt: pathname.split("/")[2] }),
         headers: {
           "Content-Type": "application/json",
         },
@@ -74,23 +75,30 @@ export default function Home() {
         dynamicVariables: {
           prompt: prompt,
         },
-        clientTools: {
-          showDsaQuestion: async ({ questionText }) => {
-            console.log("Showing DSA question:", questionText);
-            setQuestion(questionText);
-          },
-          evaluateWrittenCode: async () => {
-            console.log("Evaluating code...");
-            return code;
-          },
-          dsaQuestionOver: async () => {
-            setQuestion("");
-          },
-          end_call: async () => {
-            await stopConversation();
-            router.push("/end");
-          },
-        },
+        clientTools: pathname.split("/")[2].includes("hr")
+          ? {
+              end_call: async () => {
+                await stopConversation();
+                router.push("/end");
+              },
+            }
+          : {
+              showDsaQuestion: async ({ questionText }) => {
+                console.log("Showing DSA question:", questionText);
+                setQuestion(questionText);
+              },
+              evaluateWrittenCode: async () => {
+                console.log("Evaluating code...", new Date());
+                return code;
+              },
+              dsaQuestionOver: async () => {
+                setQuestion("");
+              },
+              end_call: async () => {
+                await stopConversation();
+                router.push("/end");
+              },
+            },
       });
     } catch (error) {
       console.error("Failed to start conversation:", error);

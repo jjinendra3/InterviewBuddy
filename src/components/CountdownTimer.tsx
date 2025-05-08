@@ -37,7 +37,7 @@ export default function CountdownTimer({
   }, [minutes, seconds]);
 
   return (
-    <div className="bg-white/80 rounded-lg p-6 backdrop-blur-sm">
+    <div className="bg-white/80 rounded-lg p-6 backdrop-blur-sm w-full">
       <div className="w-full flex justify-center items-center rounded-lg">
         <h1 className="font-bold text-xl font-mono">Time Left</h1>
       </div>

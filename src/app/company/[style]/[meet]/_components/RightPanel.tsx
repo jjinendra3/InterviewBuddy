@@ -34,7 +34,7 @@ export default function RightPanel({
   return (
     <ResizablePanel
       defaultSize={25}
-      className="flex flex-col h-full bg-white/80 p-4 rounded-lg shadow-lg m-2 backdrop-blur-sm"
+      className="flex flex-col h-full bg-white/80 p-4 rounded-lg shadow-lg m-2 backdrop-blur-sm items-center justify-center gap-2"
     >
       <div className="w-full flex justify-center items-center">
         <Button
@@ -55,7 +55,7 @@ export default function RightPanel({
         setMinutes={setMinutes}
         setSeconds={setSeconds}
       />
-      <div className="flex rounded-lg shadow-sm p-4 mb-4 bg-red-500">
+      <div className="flex rounded-lg shadow-sm p-2 my-4 bg-red-500">
         <CamScreen mediaStream={mediaStream} setMediaStream={setMediaStream} />
       </div>
       <Conversation
