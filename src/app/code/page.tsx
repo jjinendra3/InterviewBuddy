@@ -27,7 +27,7 @@ export default function CodeAccessPage() {
         </h1>
         <p className="text-lg text-foreground mb-6">
           To maintain the integrity of our platform and avoid duplicacy, the
-          source code for InterviewBuddy is not made public. We appreciate your
+          source code for AceFrame is not made public. We appreciate your
           understanding in this matter.
         </p>
         <p className="text-lg text-foreground mb-8">

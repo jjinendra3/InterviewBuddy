@@ -5,16 +5,19 @@ import {
   ResizablePanelGroup,
   ResizableHandle,
 } from "@/components/ui/resizable";
-import { CircleUserRound } from "lucide-react";
+import { CircleUserRound, Code } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { interviewStore } from "@/lib/utils/interviewStore";
+import Markdown from "react-markdown";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface LeftPanelProps {
   code: string;
   setCode: (code: string) => void;
+  question?: string;
 }
 
-export default function LeftPanel({ code, setCode }: LeftPanelProps) {
+export default function LeftPanel({ code, setCode, question }: LeftPanelProps) {
   const pathname = usePathname();
   const { subtitles } = interviewStore();
 
@@ -26,8 +29,16 @@ export default function LeftPanel({ code, setCode }: LeftPanelProps) {
             defaultSize={25}
             className="bg-white/80 p-6 overflow-auto rounded-lg shadow-lg m-2 backdrop-blur-sm"
           >
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">Question</h2>
-            <p className="text-gray-700">Your question content goes here...</p>
+            {question ? (
+              <ScrollArea className="flex flex-col h-full text-gray-500">
+                <Markdown>{question}</Markdown>
+              </ScrollArea>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full text-gray-500">
+                <Code size={40} className="text-gray-500 mr-2" />
+                DSA Question Upcoming
+              </div>
+            )}
           </ResizablePanel>
           <ResizableHandle className="border-2" />
           <ResizablePanel
@@ -38,7 +49,7 @@ export default function LeftPanel({ code, setCode }: LeftPanelProps) {
             <div className="h-full rounded-lg overflow-hidden">
               <Editor
                 height="100%"
-                defaultLanguage="javascript"
+                language="cpp"
                 value={code}
                 onChange={(value) => setCode(value || "")}
                 theme="vs-dark"
@@ -55,11 +66,7 @@ export default function LeftPanel({ code, setCode }: LeftPanelProps) {
           </ResizablePanel>
         </ResizablePanelGroup>
       ) : (
-        <div
-          className={`h-full flex flex-col gap-6 items-center p-6 text-center backdrop-blur-sm transition-all duration-300 ease-in-out ${
-            "justify-center"
-          }`}
-        >
+        <div className="h-full flex flex-col gap-6 items-center p-6 text-center backdrop-blur-sm transition-all duration-300 ease-in-out justify-center">
           <div className="flex flex-col gap-4 items-center">
             <CircleUserRound size={120} className="text-white drop-shadow-xl" />
             <h1 className="font-mono text-2xl font-extrabold text-white">

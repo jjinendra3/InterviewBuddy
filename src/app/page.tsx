@@ -23,7 +23,7 @@ export default function Home() {
             transition={{ duration: 0.5 }}
             className="text-2xl font-bold text-white"
           >
-            InterviewBuddy
+            AceFrame
           </motion.div>
           <nav>
             <Button

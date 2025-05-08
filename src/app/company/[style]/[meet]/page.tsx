@@ -12,7 +12,10 @@ import { useConversation } from "@11labs/react";
 
 export default function Home() {
   const router = useRouter();
-  const [code, setCode] = useState("// Your code here");
+  const [code, setCode] = useState(
+    '#include<iostream>\nusing namespace std;\n\nint main(){\n\tcout<<"Hello World";\n}'
+  );
+  const [question, setQuestion] = useState("");
   const [minutes, setMinutes] = useState(10);
   const [seconds, setSeconds] = useState(0);
   const mins = interviewStore((state) => state.minutes);
@@ -51,11 +54,42 @@ export default function Home() {
 
   const startConversation = useCallback(async () => {
     try {
+      const response = await fetch("/api/get-prompts", {
+        method: "POST",
+        body: JSON.stringify({ prompt: "google-tech" }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      if (!data.success) {
+        console.error("Failed to fetch prompt");
+        return;
+      }
+      const { prompt } = data.data;
+      console.log("Prompt:", prompt);
       await navigator.mediaDevices.getUserMedia({ audio: true });
       await conversation.startSession({
         agentId: process.env.NEXT_PUBLIC_AGENT_ID ?? "",
         dynamicVariables: {
-          new_variable: candidate?.name ?? "User",
+          prompt: prompt,
+        },
+        clientTools: {
+          showDsaQuestion: async ({ questionText }) => {
+            console.log("Showing DSA question:", questionText);
+            setQuestion(questionText);
+          },
+          evaluateWrittenCode: async () => {
+            console.log("Evaluating code...");
+            return code;
+          },
+          dsaQuestionOver: async () => {
+            setQuestion("");
+          },
+          end_call: async () => {
+            await stopConversation();
+            router.push("/end");
+          },
         },
       });
     } catch (error) {
@@ -103,7 +137,7 @@ export default function Home() {
   return (
     <div className="h-screen w-screen flex bg-gradient-to-br from-[#FFE6C9] to-[#FFA09B]">
       <ResizablePanelGroup direction="horizontal">
-        <LeftPanel code={code} setCode={setCode} />
+        <LeftPanel code={code} setCode={setCode} question={question} />
         <RightPanel
           minutes={minutes}
           seconds={seconds}
